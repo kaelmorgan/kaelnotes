@@ -8,7 +8,10 @@ type ReviewCardProps = {
 
 export function ReviewCard({ review }: ReviewCardProps) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper-raised">
+    <Link
+      href={`/reviews/${review.slug}`}
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper-raised transition hover:border-accent/30"
+    >
       {review.coverImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -23,10 +26,8 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <p className="font-sans text-[0.7rem] font-medium tracking-[0.12em] text-accent uppercase">
           {review.category}
         </p>
-        <h2 className="text-xl leading-snug font-semibold tracking-tight">
-          <Link href={`/reviews/${review.slug}`} className="hover:text-accent">
-            {review.title}
-          </Link>
+        <h2 className="text-xl leading-snug font-semibold tracking-tight group-hover:text-accent">
+          {review.title}
         </h2>
         <p className="flex-1 text-[0.95rem] leading-relaxed text-muted">
           {review.excerpt}
@@ -36,6 +37,6 @@ export function ReviewCard({ review }: ReviewCardProps) {
           likes
         </p>
       </div>
-    </article>
+    </Link>
   );
 }
