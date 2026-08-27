@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { LikeButton } from "@/components/LikeButton";
+import { ShareButton } from "@/components/ShareButton";
 import { formatDate, getAllReviews, getReviewBySlug } from "@/lib/content";
 import { formatCount } from "@/lib/format";
+import { reviewUrl } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllReviews().map((review) => ({ slug: review.slug }));
@@ -21,9 +23,30 @@ export async function generateMetadata({
     return { title: "Review" };
   }
 
+  const title = review.seoTitle ?? review.title;
+  const description = review.seoDescription ?? review.excerpt;
+  const url = reviewUrl(review.slug);
+
   return {
-    title: review.seoTitle ?? review.title,
-    description: review.seoDescription ?? review.excerpt,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url,
+      siteName: "Kael Notes",
+      publishedTime: review.publishedAt.toISOString(),
+      modifiedTime: (review.updatedAt ?? review.publishedAt).toISOString(),
+      images: review.coverImage ? [{ url: review.coverImage }] : undefined,
+    },
+    twitter: {
+      card: review.coverImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: review.coverImage ? [review.coverImage] : undefined,
+    },
   };
 }
 
@@ -54,6 +77,11 @@ export default async function ReviewPage({
         </time>
         <span>{formatCount(review.viewCount)} views</span>
         <LikeButton slug={review.slug} initialCount={review.likeCount} />
+        <ShareButton
+          title={review.title}
+          url={reviewUrl(review.slug)}
+          excerpt={review.excerpt}
+        />
       </div>
       {review.tags.length > 0 ? (
         <ul className="mt-4 flex flex-wrap gap-2 font-sans text-xs text-muted">
@@ -71,6 +99,16 @@ export default async function ReviewPage({
         <MDXRemote
           source={review.content}
           options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+        />
+      </div>
+      <div className="mt-14 flex items-center justify-between gap-4 border-t border-line pt-6">
+        <p className="font-sans text-sm text-muted">Share this review</p>
+        <ShareButton
+          title={review.title}
+          url={reviewUrl(review.slug)}
+          excerpt={review.excerpt}
+          align="end"
+          menuSide="top"
         />
       </div>
     </article>
