@@ -33,6 +33,10 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local view/like counts and comments
+/data/stats.json
+/data/comments.json
+
 # vercel
 .vercel
 

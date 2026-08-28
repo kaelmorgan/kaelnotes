@@ -10,6 +10,7 @@ import {
   getTags,
   type ReviewSort,
 } from "@/lib/content";
+import { attachStats } from "@/lib/stats";
 
 export const metadata: Metadata = {
   title: "Reviews",
@@ -47,7 +48,7 @@ export default async function ReviewsPage({
     Number(typeof params.page === "string" ? params.page : "1") || 1,
   );
 
-  const all = getReviewSummaries();
+  const all = await attachStats(getReviewSummaries());
   const filtered = filterAndSortReviews(all, { category, tag, sort });
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
   const currentPage = Math.min(page, pageCount);

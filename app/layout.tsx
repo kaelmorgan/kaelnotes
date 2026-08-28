@@ -24,6 +24,23 @@ export const metadata: Metadata = {
   },
   description:
     "Neutral, professional reviews and considered notes on everyday subjects, by Kael Morgan.",
+  icons: {
+    icon: [
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Kael Notes",
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
 };
 
 export default function RootLayout({
@@ -37,6 +54,12 @@ export default function RootLayout({
       className={`${inter.variable} ${sourceSerif.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

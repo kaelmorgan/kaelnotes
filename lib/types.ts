@@ -15,3 +15,10 @@ export type Review = {
 };
 
 export type ReviewSummary = Omit<Review, "content">;
+
+export type ReviewComment = {
+  id: string;
+  name: string;
+  body: string;
+  createdAt: string;
+};

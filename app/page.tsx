@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { ReviewCard } from "@/components/ReviewCard";
 import { getLatestReviews } from "@/lib/content";
+import { attachStats } from "@/lib/stats";
 
-export default function Home() {
-  const reviews = getLatestReviews(9);
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const reviews = await attachStats(getLatestReviews(9));
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">

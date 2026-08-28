@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
 import { ReviewCard } from "@/components/ReviewCard";
 import { searchReviews } from "@/lib/content";
+import { attachStats } from "@/lib/stats";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -15,7 +16,7 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const query = typeof params.q === "string" ? params.q : "";
-  const results = searchReviews(query);
+  const results = await attachStats(searchReviews(query));
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">

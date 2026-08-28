@@ -24,8 +24,6 @@ tags:
   - example
 seoTitle: Optional SEO title
 seoDescription: Optional meta description
-viewCount: 0
-likeCount: 0
 publishedAt: "2026-08-26"
 ```
 
@@ -40,4 +38,7 @@ Guides will later live in `content/guides/`. That section is empty for now.
 3. Leave the build command as `next build` and the output as the default.
 4. Add a new `.mdx` review, commit, and redeploy — or preview the branch first.
 
-View and like counts in this frame are editorial placeholders. Likes can be toggled in the browser only; they are not stored on the server yet.
+View and like counts are stored on the server. Locally they are written to `data/stats.json`. On Vercel the filesystem is ephemeral, so add an Upstash Redis (or Vercel KV) store and set either:
+
+- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`, or
+- `KV_REST_API_URL` and `KV_REST_API_TOKEN`

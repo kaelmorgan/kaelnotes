@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 
 export function Header() {
   return (
@@ -6,9 +7,10 @@ export function Header() {
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-5 py-4 sm:px-8">
         <Link
           href="/"
-          className="font-sans text-[0.95rem] font-semibold tracking-[0.14em] text-ink uppercase"
+          aria-label="Kael Notes home"
+          className="shrink-0 rounded-sm outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-accent/40"
         >
-          Kael Notes
+          <Logo />
         </Link>
         <form action="/search" method="get" className="ml-auto w-full max-w-xs">
           <label className="sr-only" htmlFor="site-search">

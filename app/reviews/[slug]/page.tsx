@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import { CommentSection } from "@/components/CommentSection";
 import { LikeButton } from "@/components/LikeButton";
 import { ShareButton } from "@/components/ShareButton";
+import { ViewCount } from "@/components/ViewCount";
+import { getComments } from "@/lib/comments";
 import { formatDate, getAllReviews, getReviewBySlug } from "@/lib/content";
-import { formatCount } from "@/lib/format";
+import { getStats } from "@/lib/stats";
 import { reviewUrl } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return getAllReviews().map((review) => ({ slug: review.slug }));
@@ -62,6 +67,11 @@ export default async function ReviewPage({
     notFound();
   }
 
+  const [stats, comments] = await Promise.all([
+    getStats(review.slug),
+    getComments(review.slug),
+  ]);
+
   return (
     <article className="mx-auto w-full max-w-[680px] px-5 py-12 sm:px-0 sm:py-16">
       <p className="font-sans text-xs tracking-[0.16em] text-accent uppercase">
@@ -75,8 +85,8 @@ export default async function ReviewPage({
         <time dateTime={review.publishedAt.toISOString()}>
           {formatDate(review.publishedAt)}
         </time>
-        <span>{formatCount(review.viewCount)} views</span>
-        <LikeButton slug={review.slug} initialCount={review.likeCount} />
+        <ViewCount slug={review.slug} initialCount={stats.views} />
+        <LikeButton slug={review.slug} initialCount={stats.likes} />
         <ShareButton
           title={review.title}
           url={reviewUrl(review.slug)}
@@ -111,6 +121,7 @@ export default async function ReviewPage({
           menuSide="top"
         />
       </div>
+      <CommentSection slug={review.slug} initialComments={comments} />
     </article>
   );
 }

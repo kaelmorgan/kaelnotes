@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { formatCount } from "@/lib/format";
 
 type LikeButtonProps = {
@@ -8,43 +8,56 @@ type LikeButtonProps = {
   initialCount: number;
 };
 
-const listeners = new Set<() => void>();
-
-function subscribe(onStoreChange: () => void) {
-  listeners.add(onStoreChange);
-  return () => listeners.delete(onStoreChange);
-}
-
-function emit() {
-  listeners.forEach((listener) => listener());
-}
-
 function storageKey(slug: string) {
   return `kaelnotes:liked:${slug}`;
 }
 
-function isLiked(slug: string) {
-  return window.localStorage.getItem(storageKey(slug)) === "1";
-}
-
 export function LikeButton({ slug, initialCount }: LikeButtonProps) {
-  const liked = useSyncExternalStore(
-    subscribe,
-    () => isLiked(slug),
-    () => false,
-  );
+  const [count, setCount] = useState(initialCount);
+  const [liked, setLiked] = useState(false);
+  const [pending, setPending] = useState(false);
 
-  const count = initialCount + (liked ? 1 : 0);
+  useEffect(() => {
+    setCount(initialCount);
+    setLiked(window.localStorage.getItem(storageKey(slug)) === "1");
+  }, [slug, initialCount]);
 
-  function toggle() {
-    window.localStorage.setItem(storageKey(slug), liked ? "0" : "1");
-    emit();
+  async function toggle() {
+    if (pending) {
+      return;
+    }
+
+    const nextLiked = !liked;
+    setPending(true);
+    setLiked(nextLiked);
+    setCount((current) => Math.max(0, current + (nextLiked ? 1 : -1)));
+    window.localStorage.setItem(storageKey(slug), nextLiked ? "1" : "0");
+
+    try {
+      const response = await fetch(`/api/stats/${encodeURIComponent(slug)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: nextLiked ? "like" : "unlike" }),
+      });
+      if (!response.ok) {
+        throw new Error("Could not update like");
+      }
+      const data = (await response.json()) as { likes: number };
+      setCount(data.likes);
+    } catch {
+      setLiked(!nextLiked);
+      setCount((current) => Math.max(0, current + (nextLiked ? -1 : 1)));
+      window.localStorage.setItem(storageKey(slug), nextLiked ? "0" : "1");
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
     <button
       type="button"
       onClick={toggle}
+      disabled={pending}
       aria-pressed={liked}
       className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-sans text-sm transition-colors ${
         liked
