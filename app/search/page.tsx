@@ -4,6 +4,8 @@ import { ReviewCard } from "@/components/ReviewCard";
 import { searchReviews } from "@/lib/content";
 import { attachStats } from "@/lib/stats";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Search",
   description: "Search reviews on Kael Notes.",

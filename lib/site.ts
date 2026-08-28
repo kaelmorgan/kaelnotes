@@ -7,6 +7,15 @@ export const siteName = "Kael Notes";
 export const siteDescription =
   "Neutral, professional reviews and considered notes on everyday subjects, by Kael Morgan.";
 
+export const author = {
+  name: "Kael Morgan",
+  role: "Writer",
+  location: "Singapore",
+  bio: "A writer based in Singapore. Neutral, professional reviews of everyday subjects.",
+  image: "/kael-morgan.jpg",
+  url: "/about",
+} as const;
+
 export function pageUrl(path = "/") {
   if (path === "/") {
     return siteUrl;

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { getReviewBySlug } from "@/lib/content";
+import { isKnownReviewSlug } from "@/lib/content";
 import {
   addComment,
   getComments,
@@ -11,13 +11,16 @@ type RouteContext = {
   params: Promise<{ slug: string }>;
 };
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 function cooldownCookie(slug: string) {
   return `kn_c_${slug}`;
 }
 
 export async function GET(_request: Request, context: RouteContext) {
   const { slug } = await context.params;
-  if (!getReviewBySlug(slug)) {
+  if (!isKnownReviewSlug(slug)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   return NextResponse.json({ comments: await getComments(slug) });
@@ -25,7 +28,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
 export async function POST(request: Request, context: RouteContext) {
   const { slug } = await context.params;
-  if (!getReviewBySlug(slug)) {
+  if (!isKnownReviewSlug(slug)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 

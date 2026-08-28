@@ -82,6 +82,17 @@ export function getReviewBySlug(slug: string): Review | undefined {
   return getAllReviews().find((review) => review.slug === slug);
 }
 
+export function isKnownReviewSlug(slug: string) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    return false;
+  }
+  if (getReviewBySlug(slug)) {
+    return true;
+  }
+  // On Vercel the API lambda may not include MDX files; don't 404 real slugs.
+  return listReviewFilenames().length === 0;
+}
+
 export function getLatestReviews(limit = 9): ReviewSummary[] {
   return getReviewSummaries().slice(0, limit);
 }

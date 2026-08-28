@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { ReviewSummary } from "@/lib/types";
+import { AuthorByline } from "@/components/AuthorByline";
 import { formatCount } from "@/lib/format";
+import type { ReviewSummary } from "@/lib/types";
 
 type ReviewCardProps = {
   review: ReviewSummary;
@@ -32,10 +33,12 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <p className="flex-1 text-[0.95rem] leading-relaxed text-muted">
           {review.excerpt}
         </p>
-        <p className="font-sans text-xs text-muted">
-          {formatCount(review.viewCount)} views · {formatCount(review.likeCount)}{" "}
-          likes
-        </p>
+        <AuthorByline size="sm" linked={false}>
+          <span>
+            {formatCount(review.viewCount)} views ·{" "}
+            {formatCount(review.likeCount)} likes
+          </span>
+        </AuthorByline>
       </div>
     </Link>
   );

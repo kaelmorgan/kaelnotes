@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { AuthorAvatar } from "@/components/AuthorAvatar";
 import { PageIntro } from "@/components/PageIntro";
+import { author } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -10,9 +12,14 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
-      <PageIntro kicker="About" title="Kael Morgan">
-        <p>A writer based in Singapore.</p>
-      </PageIntro>
+      <div className="flex items-start gap-5 sm:gap-6">
+        <AuthorAvatar size="lg" alt={author.name} />
+        <div className="min-w-0 flex-1">
+          <PageIntro kicker="About" title="Kael Morgan">
+            <p>A writer based in Singapore.</p>
+          </PageIntro>
+        </div>
+      </div>
       <div className="article-prose mt-10">
         <p>
           I am Kael Morgan, a writer based in Singapore. I follow the world with

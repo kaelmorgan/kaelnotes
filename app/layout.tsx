@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { siteUrl } from "@/lib/site";
+import { author, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,6 +43,21 @@ const organizationJsonLd = {
   logo: `${siteUrl}/logo.png`,
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: author.name,
+  url: `${siteUrl}${author.url}`,
+  image: `${siteUrl}${author.image}`,
+  jobTitle: author.role,
+  homeLocation: author.location,
+  worksFor: {
+    "@type": "Organization",
+    name: "Kael Notes",
+    url: siteUrl,
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -57,7 +72,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationJsonLd),
+            __html: JSON.stringify([organizationJsonLd, personJsonLd]),
           }}
         />
         <Header />

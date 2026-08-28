@@ -10,10 +10,6 @@ type ViewCountProps = {
 
 const viewRequests = new Map<string, Promise<number | null>>();
 
-function sessionKey(slug: string) {
-  return `kaelnotes:viewed:${slug}`;
-}
-
 function recordView(slug: string) {
   const existing = viewRequests.get(slug);
   if (existing) {
@@ -26,10 +22,9 @@ function recordView(slug: string) {
     body: JSON.stringify({ action: "view" }),
   })
     .then((response) => (response.ok ? response.json() : null))
-    .then((data: { views?: number } | null) => {
-      window.sessionStorage.setItem(sessionKey(slug), "1");
-      return typeof data?.views === "number" ? data.views : null;
-    })
+    .then((data: { views?: number } | null) =>
+      typeof data?.views === "number" ? data.views : null,
+    )
     .catch(() => null);
 
   viewRequests.set(slug, request);
@@ -41,27 +36,11 @@ export function ViewCount({ slug, initialCount }: ViewCountProps) {
 
   useEffect(() => {
     let active = true;
-    setCount(initialCount);
-
-    const pending = viewRequests.get(slug);
-    if (pending) {
-      pending.then((views) => {
-        if (active && typeof views === "number") {
-          setCount(views);
-        }
-      });
-      return () => {
-        active = false;
-      };
-    }
-
-    if (window.sessionStorage.getItem(sessionKey(slug)) === "1") {
-      return;
-    }
+    setCount((current) => Math.max(current, initialCount, 1));
 
     recordView(slug).then((views) => {
       if (active && typeof views === "number") {
-        setCount(views);
+        setCount(Math.max(views, 1));
       }
     });
 

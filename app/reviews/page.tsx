@@ -12,6 +12,8 @@ import {
 } from "@/lib/content";
 import { attachStats } from "@/lib/stats";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Reviews",
   description: "All reviews published on Kael Notes, with filters by category and tag.",

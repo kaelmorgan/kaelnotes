@@ -1,12 +1,16 @@
 import fs from "fs";
 import path from "path";
-import { connection } from "next/server";
 import type { ReviewSummary } from "./types";
 
 export type ReviewStats = {
   views: number;
   likes: number;
 };
+
+declare global {
+  // Persist counts across hot reloads and warm serverless isolates.
+  var __kaelNotesStats: Record<string, ReviewStats> | undefined;
+}
 
 const HASH_KEY = "kn:stats";
 
@@ -116,35 +120,57 @@ function writeFileStats(stats: Record<string, ReviewStats>) {
   const filePath = statsFilePath();
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, `${JSON.stringify(stats, null, 2)}\n`);
+  globalThis.__kaelNotesStats = stats;
+}
+
+function fileStats(): Record<string, ReviewStats> {
+  if (!globalThis.__kaelNotesStats) {
+    globalThis.__kaelNotesStats = readFileStats();
+  }
+  return globalThis.__kaelNotesStats;
+}
+
+async function redisField(slug: string, kind: "views" | "likes") {
+  const result = await redisCommand(["HGET", HASH_KEY, `${slug}:${kind}`]);
+  return Math.max(0, Number(result) || 0);
+}
+
+async function redisStats(slug: string): Promise<ReviewStats> {
+  const [views, likes] = await Promise.all([
+    redisField(slug, "views"),
+    redisField(slug, "likes"),
+  ]);
+  return { views, likes };
 }
 
 export async function getAllStats(): Promise<Record<string, ReviewStats>> {
-  await connection();
   if (redisConfig()) {
     const result = await redisCommand(["HGETALL", HASH_KEY]);
     return parseHash(result);
   }
-  return readFileStats();
+  return { ...fileStats() };
 }
 
 export async function getStats(slug: string): Promise<ReviewStats> {
-  const all = await getAllStats();
-  return all[slug] ?? { views: 0, likes: 0 };
+  if (redisConfig()) {
+    return redisStats(slug);
+  }
+  return fileStats()[slug] ?? { views: 0, likes: 0 };
 }
 
 export async function incrementViews(slug: string): Promise<ReviewStats> {
   if (redisConfig()) {
     await redisCommand(["HINCRBY", HASH_KEY, `${slug}:views`, 1]);
-    return getStats(slug);
+    return redisStats(slug);
   }
 
   return withFileLock(() => {
-    const stats = readFileStats();
+    const stats = fileStats();
     const current = stats[slug] ?? { views: 0, likes: 0 };
-    current.views += 1;
-    stats[slug] = current;
+    const next = { ...current, views: current.views + 1 };
+    stats[slug] = next;
     writeFileStats(stats);
-    return current;
+    return next;
   });
 }
 
@@ -154,7 +180,7 @@ export async function incrementLikes(
 ): Promise<ReviewStats> {
   if (redisConfig()) {
     await redisCommand(["HINCRBY", HASH_KEY, `${slug}:likes`, delta]);
-    const next = await getStats(slug);
+    const next = await redisStats(slug);
     if (next.likes < 0) {
       await redisCommand(["HSET", HASH_KEY, `${slug}:likes`, 0]);
       return { ...next, likes: 0 };
@@ -163,12 +189,15 @@ export async function incrementLikes(
   }
 
   return withFileLock(() => {
-    const stats = readFileStats();
+    const stats = fileStats();
     const current = stats[slug] ?? { views: 0, likes: 0 };
-    current.likes = Math.max(0, current.likes + delta);
-    stats[slug] = current;
+    const next = {
+      ...current,
+      likes: Math.max(0, current.likes + delta),
+    };
+    stats[slug] = next;
     writeFileStats(stats);
-    return current;
+    return next;
   });
 }
 

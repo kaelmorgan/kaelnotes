@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { connection } from "next/server";
 import { randomUUID } from "crypto";
 import type { ReviewComment } from "./types";
 
@@ -150,8 +149,6 @@ export function sanitizeCommentInput(input: {
 }
 
 export async function getComments(slug: string): Promise<ReviewComment[]> {
-  await connection();
-
   if (redisConfig()) {
     const result = await redisCommand(["LRANGE", listKey(slug), 0, -1]);
     if (!Array.isArray(result)) {

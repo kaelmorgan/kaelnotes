@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import { AuthorByline } from "@/components/AuthorByline";
 import { CommentSection } from "@/components/CommentSection";
 import { LikeButton } from "@/components/LikeButton";
 import { ShareButton } from "@/components/ShareButton";
 import { ViewCount } from "@/components/ViewCount";
 import { getComments } from "@/lib/comments";
 import { formatDate, getAllReviews, getReviewBySlug } from "@/lib/content";
+import { author, pageUrl, reviewUrl } from "@/lib/site";
 import { getStats } from "@/lib/stats";
-import { reviewUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,7 @@ export async function generateMetadata({
       publishedTime: review.publishedAt.toISOString(),
       modifiedTime: (review.updatedAt ?? review.publishedAt).toISOString(),
       images: review.coverImage ? [{ url: review.coverImage }] : undefined,
+      authors: [author.name],
     },
     twitter: {
       card: review.coverImage ? "summary_large_image" : "summary",
@@ -52,6 +54,7 @@ export async function generateMetadata({
       description,
       images: review.coverImage ? [review.coverImage] : undefined,
     },
+    authors: [{ name: author.name, url: pageUrl(author.url) }],
   };
 }
 
@@ -81,17 +84,21 @@ export default async function ReviewPage({
         {review.title}
       </h1>
       <p className="mt-5 text-lg leading-relaxed text-muted">{review.excerpt}</p>
-      <div className="mt-6 flex flex-wrap items-center gap-4 font-sans text-sm text-muted">
-        <time dateTime={review.publishedAt.toISOString()}>
-          {formatDate(review.publishedAt)}
-        </time>
-        <ViewCount slug={review.slug} initialCount={stats.views} />
-        <LikeButton slug={review.slug} initialCount={stats.likes} />
-        <ShareButton
-          title={review.title}
-          url={reviewUrl(review.slug)}
-          excerpt={review.excerpt}
-        />
+      <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+        <AuthorByline>
+          <time dateTime={review.publishedAt.toISOString()}>
+            {formatDate(review.publishedAt)}
+          </time>
+          <ViewCount slug={review.slug} initialCount={stats.views} />
+        </AuthorByline>
+        <div className="flex items-center gap-3">
+          <LikeButton slug={review.slug} initialCount={stats.likes} />
+          <ShareButton
+            title={review.title}
+            url={reviewUrl(review.slug)}
+            excerpt={review.excerpt}
+          />
+        </div>
       </div>
       {review.tags.length > 0 ? (
         <ul className="mt-4 flex flex-wrap gap-2 font-sans text-xs text-muted">
@@ -111,8 +118,8 @@ export default async function ReviewPage({
           options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
         />
       </div>
-      <div className="mt-14 flex items-center justify-between gap-4 border-t border-line pt-6">
-        <p className="font-sans text-sm text-muted">Share this review</p>
+      <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
+        <AuthorByline />
         <ShareButton
           title={review.title}
           url={reviewUrl(review.slug)}
