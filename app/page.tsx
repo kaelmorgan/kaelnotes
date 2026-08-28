@@ -18,8 +18,7 @@ export default async function Home() {
           Close reading of ordinary things
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-muted">
-          Neutral, professional notes from Singapore — on travel, sport, and
-          whatever else earns a second look.
+          Neutral, professional notes — on anything happening around the world.
         </p>
       </div>
 
