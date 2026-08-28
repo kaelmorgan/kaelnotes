@@ -7,7 +7,6 @@ import {
   filterAndSortReviews,
   getCategories,
   getReviewSummaries,
-  getTags,
   type ReviewSort,
 } from "@/lib/content";
 import { attachStats } from "@/lib/stats";
@@ -16,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Reviews",
-  description: "All reviews published on Kael Notes, with filters by category and tag.",
+  description: "All reviews published on Kael Notes, with filters by category.",
 };
 
 const pageSizes = [6, 9, 12, 24];
@@ -40,7 +39,6 @@ export default async function ReviewsPage({
 }) {
   const params = await searchParams;
   const category = typeof params.category === "string" ? params.category : undefined;
-  const tag = typeof params.tag === "string" ? params.tag : undefined;
   const sort = parseSort(typeof params.sort === "string" ? params.sort : undefined);
   const perPage = parsePerPage(
     typeof params.perPage === "string" ? params.perPage : undefined,
@@ -51,7 +49,7 @@ export default async function ReviewsPage({
   );
 
   const all = await attachStats(getReviewSummaries());
-  const filtered = filterAndSortReviews(all, { category, tag, sort });
+  const filtered = filterAndSortReviews(all, { category, sort });
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
   const currentPage = Math.min(page, pageCount);
   const start = (currentPage - 1) * perPage;
@@ -60,7 +58,6 @@ export default async function ReviewsPage({
   function hrefForPage(nextPage: number) {
     const query = new URLSearchParams();
     if (category) query.set("category", category);
-    if (tag) query.set("tag", tag);
     if (sort !== "latest") query.set("sort", sort);
     if (perPage !== 9) query.set("perPage", String(perPage));
     if (nextPage > 1) query.set("page", String(nextPage));
@@ -77,9 +74,7 @@ export default async function ReviewsPage({
       <div className="mt-10">
         <ReviewsToolbar
           categories={getCategories(all)}
-          tags={getTags(all)}
           category={category}
-          tag={tag}
           sort={sort}
           perPage={perPage}
         />

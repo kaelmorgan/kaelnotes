@@ -19,7 +19,7 @@ export function GET() {
     "## Site",
     "",
     `- [Home](${pageUrl("/")}): Latest reviews in a reading-focused layout`,
-    `- [All reviews](${pageUrl("/reviews")}): Full archive with category and tag filters`,
+    `- [All reviews](${pageUrl("/reviews")}): Full archive with category filters`,
     `- [About](${pageUrl("/about")}): About Kael Morgan and the site`,
     `- [FAQ](${pageUrl("/faq")}): What gets reviewed and how the work is approached`,
     `- [Guides](${pageUrl("/guides")}): Longer practical pieces (coming soon)`,

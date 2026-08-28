@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { isKnownReviewSlug } from "@/lib/content";
-import { getStats, incrementLikes, incrementViews } from "@/lib/stats";
+import {
+  getStats,
+  incrementLikes,
+  incrementViews,
+  likeCookieName,
+  viewCookieName,
+} from "@/lib/stats";
 
 type RouteContext = {
   params: Promise<{ slug: string }>;
@@ -11,16 +17,19 @@ const actions = new Set(["view", "like", "unlike"]);
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function cookieName(kind: "v" | "l", slug: string) {
-  return `kn_${kind}_${slug}`;
-}
-
 function hasCookie(request: Request, name: string) {
   const header = request.headers.get("cookie");
   if (!header) {
     return false;
   }
   return header.split(";").some((part) => part.trim().startsWith(`${name}=`));
+}
+
+function isAutomatedBrowser(request: Request) {
+  const userAgent = request.headers.get("user-agent") ?? "";
+  return /bot|crawl|spider|slurp|facebookexternalhit|preview|lighthouse/i.test(
+    userAgent,
+  );
 }
 
 function withViewerFloor(
@@ -43,8 +52,8 @@ export async function GET(request: Request, context: RouteContext) {
   return NextResponse.json(
     withViewerFloor(
       stats,
-      hasCookie(request, cookieName("v", slug)),
-      hasCookie(request, cookieName("l", slug)),
+      hasCookie(request, viewCookieName(slug)),
+      hasCookie(request, likeCookieName(slug)),
     ),
   );
 }
@@ -67,13 +76,16 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   }
 
-  const viewed = hasCookie(request, cookieName("v", slug));
-  const liked = hasCookie(request, cookieName("l", slug));
+  const viewed = hasCookie(request, viewCookieName(slug));
+  const liked = hasCookie(request, likeCookieName(slug));
 
   if (action === "view") {
-    const stats = viewed ? await getStats(slug) : await incrementViews(slug);
+    const shouldCount = !viewed && !isAutomatedBrowser(request);
+    const stats = shouldCount
+      ? await incrementViews(slug)
+      : await getStats(slug);
     const response = NextResponse.json(withViewerFloor(stats, true, liked));
-    response.cookies.set(cookieName("v", slug), "1", {
+    response.cookies.set(viewCookieName(slug), "1", {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24,
@@ -85,7 +97,7 @@ export async function POST(request: Request, context: RouteContext) {
   if (action === "like") {
     const stats = liked ? await getStats(slug) : await incrementLikes(slug, 1);
     const response = NextResponse.json(withViewerFloor(stats, viewed, true));
-    response.cookies.set(cookieName("l", slug), "1", {
+    response.cookies.set(likeCookieName(slug), "1", {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 365,
@@ -96,7 +108,7 @@ export async function POST(request: Request, context: RouteContext) {
 
   const stats = liked ? await incrementLikes(slug, -1) : await getStats(slug);
   const response = NextResponse.json(withViewerFloor(stats, viewed, false));
-  response.cookies.set(cookieName("l", slug), "", {
+  response.cookies.set(likeCookieName(slug), "", {
     httpOnly: true,
     sameSite: "lax",
     maxAge: 0,

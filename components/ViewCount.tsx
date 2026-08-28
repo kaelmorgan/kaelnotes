@@ -36,11 +36,11 @@ export function ViewCount({ slug, initialCount }: ViewCountProps) {
 
   useEffect(() => {
     let active = true;
-    setCount((current) => Math.max(current, initialCount, 1));
+    setCount(initialCount);
 
     recordView(slug).then((views) => {
       if (active && typeof views === "number") {
-        setCount(Math.max(views, 1));
+        setCount(views);
       }
     });
 

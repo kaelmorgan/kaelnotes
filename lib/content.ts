@@ -101,10 +101,6 @@ export function getCategories(reviews: ReviewSummary[] = getReviewSummaries()) {
   return [...new Set(reviews.map((review) => review.category))].sort();
 }
 
-export function getTags(reviews: ReviewSummary[] = getReviewSummaries()) {
-  return [...new Set(reviews.flatMap((review) => review.tags))].sort();
-}
-
 export function searchReviews(query: string): ReviewSummary[] {
   const needle = query.trim().toLowerCase();
   if (!needle) {
@@ -131,7 +127,6 @@ export function filterAndSortReviews(
   reviews: ReviewSummary[],
   options: {
     category?: string;
-    tag?: string;
     sort?: ReviewSort;
   },
 ): ReviewSummary[] {
@@ -139,10 +134,6 @@ export function filterAndSortReviews(
 
   if (options.category) {
     result = result.filter((review) => review.category === options.category);
-  }
-
-  if (options.tag) {
-    result = result.filter((review) => review.tags.includes(options.tag!));
   }
 
   const sort = options.sort ?? "latest";

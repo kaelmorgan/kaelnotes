@@ -1,5 +1,7 @@
 import fs from "fs";
 import path from "path";
+import { cookies } from "next/headers";
+import { connection } from "next/server";
 import type { ReviewSummary } from "./types";
 
 export type ReviewStats = {
@@ -13,6 +15,14 @@ declare global {
 }
 
 const HASH_KEY = "kn:stats";
+
+export function viewCookieName(slug: string) {
+  return `kn_v_${slug}`;
+}
+
+export function likeCookieName(slug: string) {
+  return `kn_l_${slug}`;
+}
 
 function statsFilePath() {
   if (process.env.VERCEL) {
@@ -202,16 +212,18 @@ export async function incrementLikes(
 }
 
 export async function attachStats<T extends ReviewSummary>(reviews: T[]): Promise<T[]> {
+  await connection();
+  const jar = await cookies();
   const stats = await getAllStats();
+
   return reviews.map((review) => {
-    const live = stats[review.slug];
-    if (!live) {
-      return { ...review, viewCount: 0, likeCount: 0 };
-    }
+    const live = stats[review.slug] ?? { views: 0, likes: 0 };
+    const viewed = Boolean(jar.get(viewCookieName(review.slug)));
+    const liked = Boolean(jar.get(likeCookieName(review.slug)));
     return {
       ...review,
-      viewCount: live.views,
-      likeCount: live.likes,
+      viewCount: viewed ? Math.max(live.views, 1) : live.views,
+      likeCount: liked ? Math.max(live.likes, 1) : live.likes,
     };
   });
 }
