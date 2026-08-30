@@ -5,12 +5,15 @@ import type { ReviewSummary } from "@/lib/types";
 
 type ReviewCardProps = {
   review: ReviewSummary;
+  href?: string;
 };
 
-export function ReviewCard({ review }: ReviewCardProps) {
+export function ReviewCard({ review, href }: ReviewCardProps) {
+  const destination = href ?? `/reviews/${review.slug}`;
+
   return (
     <Link
-      href={`/reviews/${review.slug}`}
+      href={destination}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper-raised transition hover:border-accent/30"
     >
       {review.coverImage ? (

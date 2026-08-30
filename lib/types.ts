@@ -1,3 +1,8 @@
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 export type Review = {
   title: string;
   slug: string;
@@ -15,6 +20,12 @@ export type Review = {
 };
 
 export type ReviewSummary = Omit<Review, "content">;
+
+export type Guide = Review & {
+  faqs: FaqItem[];
+};
+
+export type GuideSummary = Omit<Guide, "content">;
 
 export type ReviewComment = {
   id: string;

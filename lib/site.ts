@@ -28,6 +28,10 @@ export function reviewUrl(slug: string) {
   return pageUrl(`/reviews/${slug}`);
 }
 
+export function guideUrl(slug: string) {
+  return pageUrl(`/guides/${slug}`);
+}
+
 export function absoluteAssetUrl(path: string) {
   return path.startsWith("http") ? path : pageUrl(path);
 }

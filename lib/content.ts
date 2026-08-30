@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import type { Review, ReviewSummary } from "./types";
+import type { FaqItem, Guide, GuideSummary, Review, ReviewSummary } from "./types";
 
 const reviewsDirectory = path.join(process.cwd(), "content/reviews");
+const guidesDirectory = path.join(process.cwd(), "content/guides");
 
 type ReviewFrontmatter = {
   title: string;
@@ -18,41 +19,53 @@ type ReviewFrontmatter = {
   likeCount?: number;
   publishedAt: string;
   updatedAt?: string;
+  faqs?: FaqItem[];
 };
 
-function parseReviewFile(filename: string): Review {
-  const fullPath = path.join(reviewsDirectory, filename);
+function parseMdxArticle(directory: string, filename: string): {
+  article: Review;
+  faqs: FaqItem[];
+} {
+  const fullPath = path.join(directory, filename);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
   const frontmatter = data as ReviewFrontmatter;
 
   return {
-    title: frontmatter.title,
-    slug: frontmatter.slug,
-    excerpt: frontmatter.excerpt,
-    content: content.trim(),
-    category: frontmatter.category,
-    tags: frontmatter.tags ?? [],
-    coverImage: frontmatter.coverImage,
-    seoTitle: frontmatter.seoTitle,
-    seoDescription: frontmatter.seoDescription,
-    viewCount: frontmatter.viewCount ?? 0,
-    likeCount: frontmatter.likeCount ?? 0,
-    publishedAt: new Date(frontmatter.publishedAt),
-    updatedAt: frontmatter.updatedAt
-      ? new Date(frontmatter.updatedAt)
-      : undefined,
+    article: {
+      title: frontmatter.title,
+      slug: frontmatter.slug,
+      excerpt: frontmatter.excerpt,
+      content: content.trim(),
+      category: frontmatter.category,
+      tags: frontmatter.tags ?? [],
+      coverImage: frontmatter.coverImage,
+      seoTitle: frontmatter.seoTitle,
+      seoDescription: frontmatter.seoDescription,
+      viewCount: frontmatter.viewCount ?? 0,
+      likeCount: frontmatter.likeCount ?? 0,
+      publishedAt: new Date(frontmatter.publishedAt),
+      updatedAt: frontmatter.updatedAt
+        ? new Date(frontmatter.updatedAt)
+        : undefined,
+    },
+    faqs: (frontmatter.faqs ?? []).filter(
+      (item) => item.question?.trim() && item.answer?.trim(),
+    ),
   };
 }
 
-function listReviewFilenames() {
-  if (!fs.existsSync(reviewsDirectory)) {
-    return [];
-  }
+function parseReviewFile(filename: string): Review {
+  return parseMdxArticle(reviewsDirectory, filename).article;
+}
 
-  return fs
-    .readdirSync(reviewsDirectory)
-    .filter((filename) => filename.endsWith(".mdx"));
+function parseGuideFile(filename: string): Guide {
+  const { article, faqs } = parseMdxArticle(guidesDirectory, filename);
+  return { ...article, faqs };
+}
+
+function listReviewFilenames() {
+  return listMdxFilenames(reviewsDirectory);
 }
 
 export function getAllReviews(): Review[] {
@@ -82,15 +95,57 @@ export function getReviewBySlug(slug: string): Review | undefined {
   return getAllReviews().find((review) => review.slug === slug);
 }
 
+function listMdxFilenames(directory: string) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(directory)
+    .filter((filename) => filename.endsWith(".mdx"));
+}
+
+function listGuideFilenames() {
+  return listMdxFilenames(guidesDirectory);
+}
+
+export function getAllGuides(): Guide[] {
+  return listGuideFilenames()
+    .map(parseGuideFile)
+    .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+}
+
+export function getGuideSummaries(): GuideSummary[] {
+  return getAllGuides().map((guide) => ({
+    title: guide.title,
+    slug: guide.slug,
+    excerpt: guide.excerpt,
+    category: guide.category,
+    tags: guide.tags,
+    coverImage: guide.coverImage,
+    seoTitle: guide.seoTitle,
+    seoDescription: guide.seoDescription,
+    viewCount: guide.viewCount,
+    likeCount: guide.likeCount,
+    publishedAt: guide.publishedAt,
+    updatedAt: guide.updatedAt,
+    faqs: guide.faqs,
+  }));
+}
+
+export function getGuideBySlug(slug: string): Guide | undefined {
+  return getAllGuides().find((guide) => guide.slug === slug);
+}
+
 export function isKnownReviewSlug(slug: string) {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     return false;
   }
-  if (getReviewBySlug(slug)) {
+  if (getReviewBySlug(slug) || getGuideBySlug(slug)) {
     return true;
   }
   // On Vercel the API lambda may not include MDX files; don't 404 real slugs.
-  return listReviewFilenames().length === 0;
+  return listReviewFilenames().length === 0 && listGuideFilenames().length === 0;
 }
 
 export function getLatestReviews(limit = 9): ReviewSummary[] {
@@ -101,24 +156,32 @@ export function getCategories(reviews: ReviewSummary[] = getReviewSummaries()) {
   return [...new Set(reviews.map((review) => review.category))].sort();
 }
 
+function matchesQuery(
+  item: Pick<ReviewSummary, "title" | "excerpt" | "category" | "tags">,
+  needle: string,
+) {
+  const haystack = [item.title, item.excerpt, item.category, ...item.tags]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(needle);
+}
+
 export function searchReviews(query: string): ReviewSummary[] {
   const needle = query.trim().toLowerCase();
   if (!needle) {
     return [];
   }
 
-  return getReviewSummaries().filter((review) => {
-    const haystack = [
-      review.title,
-      review.excerpt,
-      review.category,
-      ...review.tags,
-    ]
-      .join(" ")
-      .toLowerCase();
+  return getReviewSummaries().filter((review) => matchesQuery(review, needle));
+}
 
-    return haystack.includes(needle);
-  });
+export function searchGuides(query: string): GuideSummary[] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) {
+    return [];
+  }
+
+  return getGuideSummaries().filter((guide) => matchesQuery(guide, needle));
 }
 
 export type ReviewSort = "latest" | "views" | "likes";

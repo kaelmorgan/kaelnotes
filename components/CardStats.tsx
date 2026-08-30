@@ -39,7 +39,8 @@ export function CardStats({ slug, views, likes }: CardStatsProps) {
 
   return (
     <span>
-      {formatCount(stats.views)} views · {formatCount(stats.likes)} likes
+      {formatCount(stats.views)} {stats.views === 1 ? "view" : "views"} ·{" "}
+      {formatCount(stats.likes)} {stats.likes === 1 ? "like" : "likes"}
     </span>
   );
 }

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { cookies } from "next/headers";
+import { get, put } from "@vercel/blob";
 import { connection } from "next/server";
 import type { ReviewSummary } from "./types";
 
@@ -9,221 +9,156 @@ export type ReviewStats = {
   likes: number;
 };
 
-declare global {
-  // Persist counts across hot reloads and warm serverless isolates.
-  var __kaelNotesStats: Record<string, ReviewStats> | undefined;
-}
+const BLOB_PATH = "engagement/review-stats.json";
 
-const HASH_KEY = "kn:stats";
-
-export function viewCookieName(slug: string) {
-  return `kn_v_${slug}`;
-}
-
-export function likeCookieName(slug: string) {
-  return `kn_l_${slug}`;
-}
-
-function statsFilePath() {
-  if (process.env.VERCEL) {
-    return path.join("/tmp", "kaelnotes-stats.json");
-  }
+function localStatsPath() {
   return path.join(process.cwd(), "data", "stats.json");
 }
 
-function redisConfig() {
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) {
-    return null;
-  }
-  return { url: url.replace(/\/$/, ""), token };
+function useBlobStore() {
+  return (
+    process.env.NODE_ENV === "production" &&
+    Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+  );
 }
 
-async function redisCommand(args: (string | number)[]) {
-  const config = redisConfig();
-  if (!config) {
-    return null;
-  }
-
-  const response = await fetch(config.url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(args),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Stats store error ${response.status}`);
-  }
-
-  const payload = (await response.json()) as { result: unknown };
-  return payload.result;
+function emptyStats(): ReviewStats {
+  return { views: 0, likes: 0 };
 }
 
-function parseHash(result: unknown): Record<string, ReviewStats> {
-  const pairs: [string, string][] = [];
-
-  if (Array.isArray(result)) {
-    for (let i = 0; i < result.length; i += 2) {
-      pairs.push([String(result[i]), String(result[i + 1] ?? "0")]);
-    }
-  } else if (result && typeof result === "object") {
-    for (const [field, value] of Object.entries(result)) {
-      pairs.push([field, String(value)]);
-    }
+function parseStatsMap(value: unknown): Record<string, ReviewStats> {
+  if (!value || typeof value !== "object") {
+    return {};
   }
 
   const stats: Record<string, ReviewStats> = {};
-  for (const [field, value] of pairs) {
-    const separator = field.lastIndexOf(":");
-    if (separator === -1) {
-      continue;
-    }
-    const slug = field.slice(0, separator);
-    const kind = field.slice(separator + 1);
-    const current = stats[slug] ?? { views: 0, likes: 0 };
-    const amount = Number(value) || 0;
-    if (kind === "views") {
-      current.views = amount;
-    }
-    if (kind === "likes") {
-      current.likes = Math.max(0, amount);
-    }
-    stats[slug] = current;
+  for (const [slug, entry] of Object.entries(value as Record<string, Partial<ReviewStats>>)) {
+    stats[slug] = {
+      views: Number(entry?.views) || 0,
+      likes: Math.max(0, Number(entry?.likes) || 0),
+    };
   }
   return stats;
 }
 
 function readFileStats(): Record<string, ReviewStats> {
   try {
-    const raw = fs.readFileSync(statsFilePath(), "utf8");
-    const parsed = JSON.parse(raw) as Record<string, Partial<ReviewStats>>;
-    const stats: Record<string, ReviewStats> = {};
-    for (const [slug, value] of Object.entries(parsed)) {
-      stats[slug] = {
-        views: Number(value.views) || 0,
-        likes: Math.max(0, Number(value.likes) || 0),
-      };
-    }
-    return stats;
+    const raw = fs.readFileSync(localStatsPath(), "utf8");
+    return parseStatsMap(JSON.parse(raw));
   } catch {
     return {};
   }
 }
 
-let fileWriteQueue: Promise<void> = Promise.resolve();
+function writeFileStats(stats: Record<string, ReviewStats>) {
+  const filePath = localStatsPath();
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, `${JSON.stringify(stats, null, 2)}\n`);
+}
 
-function withFileLock<T>(fn: () => T): Promise<T> {
-  const next = fileWriteQueue.then(fn, fn);
-  fileWriteQueue = next.then(
+async function readBlobStats(): Promise<Record<string, ReviewStats>> {
+  try {
+    const result = await get(BLOB_PATH, {
+      access: "private",
+      useCache: false,
+    });
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return {};
+    }
+    const text = await new Response(result.stream).text();
+    return parseStatsMap(JSON.parse(text));
+  } catch {
+    return {};
+  }
+}
+
+async function writeBlobStats(stats: Record<string, ReviewStats>) {
+  await put(BLOB_PATH, JSON.stringify(stats), {
+    access: "private",
+    allowOverwrite: true,
+    addRandomSuffix: false,
+    cacheControlMaxAge: 0,
+    contentType: "application/json",
+  });
+}
+
+async function loadAll(): Promise<Record<string, ReviewStats>> {
+  if (useBlobStore()) {
+    return readBlobStats();
+  }
+  return readFileStats();
+}
+
+async function saveAll(stats: Record<string, ReviewStats>) {
+  if (useBlobStore()) {
+    await writeBlobStats(stats);
+    return;
+  }
+  writeFileStats(stats);
+}
+
+let writeQueue: Promise<void> = Promise.resolve();
+
+function withLock<T>(fn: () => Promise<T>): Promise<T> {
+  const run = writeQueue.then(fn, fn);
+  writeQueue = run.then(
     () => undefined,
     () => undefined,
   );
-  return next;
+  return run;
 }
 
-function writeFileStats(stats: Record<string, ReviewStats>) {
-  const filePath = statsFilePath();
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(stats, null, 2)}\n`);
-  globalThis.__kaelNotesStats = stats;
-}
-
-function fileStats(): Record<string, ReviewStats> {
-  if (!globalThis.__kaelNotesStats) {
-    globalThis.__kaelNotesStats = readFileStats();
-  }
-  return globalThis.__kaelNotesStats;
-}
-
-async function redisField(slug: string, kind: "views" | "likes") {
-  const result = await redisCommand(["HGET", HASH_KEY, `${slug}:${kind}`]);
-  return Math.max(0, Number(result) || 0);
-}
-
-async function redisStats(slug: string): Promise<ReviewStats> {
-  const [views, likes] = await Promise.all([
-    redisField(slug, "views"),
-    redisField(slug, "likes"),
-  ]);
-  return { views, likes };
+async function updateSlug(
+  slug: string,
+  mutate: (current: ReviewStats) => ReviewStats,
+): Promise<ReviewStats> {
+  return withLock(async () => {
+    const all = await loadAll();
+    const next = mutate(all[slug] ?? emptyStats());
+    all[slug] = next;
+    await saveAll(all);
+    return next;
+  });
 }
 
 export async function getAllStats(): Promise<Record<string, ReviewStats>> {
-  if (redisConfig()) {
-    const result = await redisCommand(["HGETALL", HASH_KEY]);
-    return parseHash(result);
-  }
-  return { ...fileStats() };
+  return loadAll();
 }
 
 export async function getStats(slug: string): Promise<ReviewStats> {
-  if (redisConfig()) {
-    return redisStats(slug);
-  }
-  return fileStats()[slug] ?? { views: 0, likes: 0 };
+  const all = await loadAll();
+  return all[slug] ?? emptyStats();
 }
 
 export async function incrementViews(slug: string): Promise<ReviewStats> {
-  if (redisConfig()) {
-    await redisCommand(["HINCRBY", HASH_KEY, `${slug}:views`, 1]);
-    return redisStats(slug);
-  }
-
-  return withFileLock(() => {
-    const stats = fileStats();
-    const current = stats[slug] ?? { views: 0, likes: 0 };
-    const next = { ...current, views: current.views + 1 };
-    stats[slug] = next;
-    writeFileStats(stats);
-    return next;
-  });
+  return updateSlug(slug, (current) => ({
+    ...current,
+    views: current.views + 1,
+  }));
 }
 
 export async function incrementLikes(
   slug: string,
   delta: 1 | -1,
 ): Promise<ReviewStats> {
-  if (redisConfig()) {
-    await redisCommand(["HINCRBY", HASH_KEY, `${slug}:likes`, delta]);
-    const next = await redisStats(slug);
-    if (next.likes < 0) {
-      await redisCommand(["HSET", HASH_KEY, `${slug}:likes`, 0]);
-      return { ...next, likes: 0 };
-    }
-    return next;
-  }
-
-  return withFileLock(() => {
-    const stats = fileStats();
-    const current = stats[slug] ?? { views: 0, likes: 0 };
-    const next = {
-      ...current,
-      likes: Math.max(0, current.likes + delta),
-    };
-    stats[slug] = next;
-    writeFileStats(stats);
-    return next;
-  });
+  return updateSlug(slug, (current) => ({
+    ...current,
+    likes: Math.max(0, current.likes + delta),
+  }));
 }
 
-export async function attachStats<T extends ReviewSummary>(reviews: T[]): Promise<T[]> {
+export async function attachStats<T extends ReviewSummary>(
+  reviews: T[],
+): Promise<T[]> {
   await connection();
-  const jar = await cookies();
   const stats = await getAllStats();
 
   return reviews.map((review) => {
-    const live = stats[review.slug] ?? { views: 0, likes: 0 };
-    const viewed = Boolean(jar.get(viewCookieName(review.slug)));
-    const liked = Boolean(jar.get(likeCookieName(review.slug)));
+    const live = stats[review.slug] ?? emptyStats();
     return {
       ...review,
-      viewCount: viewed ? Math.max(live.views, 1) : live.views,
-      likeCount: liked ? Math.max(live.likes, 1) : live.likes,
+      viewCount: live.views,
+      likeCount: live.likes,
     };
   });
 }

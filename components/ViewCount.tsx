@@ -8,26 +8,33 @@ type ViewCountProps = {
   initialCount: number;
 };
 
-const viewRequests = new Map<string, Promise<number | null>>();
+const inFlight = new Map<string, Promise<number | null>>();
 
-function recordView(slug: string) {
-  const existing = viewRequests.get(slug);
+function storageKey(slug: string) {
+  return `kaelnotes:viewed:${slug}`;
+}
+
+function loadStats(slug: string, alreadyViewed: boolean) {
+  const existing = inFlight.get(slug);
   if (existing) {
     return existing;
   }
 
   const request = fetch(`/api/stats/${encodeURIComponent(slug)}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action: "view" }),
+    method: alreadyViewed ? "GET" : "POST",
+    headers: alreadyViewed ? undefined : { "Content-Type": "application/json" },
+    body: alreadyViewed ? undefined : JSON.stringify({ action: "view" }),
   })
     .then((response) => (response.ok ? response.json() : null))
-    .then((data: { views?: number } | null) =>
-      typeof data?.views === "number" ? data.views : null,
-    )
+    .then((data: { views?: number } | null) => {
+      if (!alreadyViewed) {
+        window.localStorage.setItem(storageKey(slug), "1");
+      }
+      return typeof data?.views === "number" ? data.views : null;
+    })
     .catch(() => null);
 
-  viewRequests.set(slug, request);
+  inFlight.set(slug, request);
   return request;
 }
 
@@ -38,7 +45,8 @@ export function ViewCount({ slug, initialCount }: ViewCountProps) {
     let active = true;
     setCount(initialCount);
 
-    recordView(slug).then((views) => {
+    const alreadyViewed = window.localStorage.getItem(storageKey(slug)) === "1";
+    loadStats(slug, alreadyViewed).then((views) => {
       if (active && typeof views === "number") {
         setCount(views);
       }

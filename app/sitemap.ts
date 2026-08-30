@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllReviews } from "@/lib/content";
+import { getAllGuides, getAllReviews } from "@/lib/content";
 import { absoluteAssetUrl, pageUrl } from "@/lib/site";
 
 const staticRoutes: Array<{
@@ -16,8 +16,16 @@ const staticRoutes: Array<{
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const reviews = getAllReviews();
+  const guides = getAllGuides();
   const latestReviewUpdate = reviews.reduce<Date | undefined>((latest, review) => {
     const modified = review.updatedAt ?? review.publishedAt;
+    if (!latest || modified > latest) {
+      return modified;
+    }
+    return latest;
+  }, undefined);
+  const latestGuideUpdate = guides.reduce<Date | undefined>((latest, guide) => {
+    const modified = guide.updatedAt ?? guide.publishedAt;
     if (!latest || modified > latest) {
       return modified;
     }
@@ -26,7 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPages: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: pageUrl(route.path),
-    lastModified: route.path === "/" ? latestReviewUpdate : undefined,
+    lastModified:
+      route.path === "/"
+        ? latestReviewUpdate
+        : route.path === "/guides"
+          ? latestGuideUpdate
+          : undefined,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));
@@ -41,5 +54,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       : undefined,
   }));
 
-  return [...staticPages, ...reviewPages];
+  const guidePages: MetadataRoute.Sitemap = guides.map((guide) => ({
+    url: pageUrl(`/guides/${guide.slug}`),
+    lastModified: guide.updatedAt ?? guide.publishedAt,
+    changeFrequency: "monthly",
+    priority: 0.8,
+    images: guide.coverImage
+      ? [absoluteAssetUrl(guide.coverImage)]
+      : undefined,
+  }));
+
+  return [...staticPages, ...reviewPages, ...guidePages];
 }

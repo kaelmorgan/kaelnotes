@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
 import { ReviewCard } from "@/components/ReviewCard";
-import { searchReviews } from "@/lib/content";
+import { searchGuides, searchReviews } from "@/lib/content";
 import { attachStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search reviews on Kael Notes.",
+  description: "Search reviews and guides on Kael Notes.",
 };
 
 export default async function SearchPage({
@@ -18,27 +18,53 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const query = typeof params.q === "string" ? params.q : "";
-  const results = await attachStats(searchReviews(query));
+  const [reviews, guides] = await Promise.all([
+    attachStats(searchReviews(query)),
+    attachStats(searchGuides(query)),
+  ]);
+  const total = reviews.length + guides.length;
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
-      <PageIntro kicker="Search" title={query ? `Results for “${query}”` : "Search reviews"}>
+      <PageIntro kicker="Search" title={query ? `Results for “${query}”` : "Search reviews and guides"}>
         {query ? (
           <p>
-            {results.length === 0
-              ? "No reviews matched that phrase."
-              : `${results.length} ${results.length === 1 ? "review" : "reviews"} found.`}
+            {total === 0
+              ? "Nothing matched that phrase."
+              : `${total} ${total === 1 ? "result" : "results"} found.`}
           </p>
         ) : (
           <p>Use the search field in the header to look through titles, excerpts, categories, and tags.</p>
         )}
       </PageIntro>
 
-      {results.length > 0 ? (
-        <section className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((review) => (
-            <ReviewCard key={review.slug} review={review} />
-          ))}
+      {reviews.length > 0 ? (
+        <section className="mt-10">
+          <h2 className="mb-4 font-sans text-xs tracking-[0.16em] text-accent uppercase">
+            Reviews
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {reviews.map((review) => (
+              <ReviewCard key={review.slug} review={review} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {guides.length > 0 ? (
+        <section className="mt-10">
+          <h2 className="mb-4 font-sans text-xs tracking-[0.16em] text-accent uppercase">
+            Guides
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {guides.map((guide) => (
+              <ReviewCard
+                key={guide.slug}
+                review={guide}
+                href={`/guides/${guide.slug}`}
+              />
+            ))}
+          </div>
         </section>
       ) : null}
     </div>

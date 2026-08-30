@@ -27,6 +27,11 @@ const faqs = [
     answer:
       "No. The first proper reviews are still being written. The site is live so the work has a home when it is ready.",
   },
+  {
+    question: "Why publish guides as well as reviews?",
+    answer:
+      "Reviews are close readings of a particular experience. Guides explain the standard behind them — starting with why a neutral, professional review matters.",
+  },
 ];
 
 export default function FaqPage() {

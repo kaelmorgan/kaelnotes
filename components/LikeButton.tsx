@@ -18,11 +18,8 @@ export function LikeButton({ slug, initialCount }: LikeButtonProps) {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    const storedLiked = window.localStorage.getItem(storageKey(slug)) === "1";
-    setLiked(storedLiked);
-    setCount((current) =>
-      Math.max(initialCount, storedLiked ? 1 : 0, current),
-    );
+    setCount(initialCount);
+    setLiked(window.localStorage.getItem(storageKey(slug)) === "1");
   }, [slug, initialCount]);
 
   async function toggle() {
@@ -46,7 +43,7 @@ export function LikeButton({ slug, initialCount }: LikeButtonProps) {
         throw new Error("Could not update like");
       }
       const data = (await response.json()) as { likes: number };
-      setCount(Math.max(data.likes, nextLiked ? 1 : 0));
+      setCount(data.likes);
     } catch {
       setLiked(!nextLiked);
       setCount((current) => Math.max(0, current + (nextLiked ? -1 : 1)));

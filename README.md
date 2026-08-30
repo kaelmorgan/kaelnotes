@@ -29,7 +29,19 @@ publishedAt: "2026-08-26"
 
 The body of the file is the article. Restart or refresh the dev server after adding a file.
 
-Guides will later live in `content/guides/`. That section is empty for now.
+## Write a guide
+
+Add a Markdown/MDX file under `content/guides/` with the same frontmatter as a review, plus an optional `faqs` list for the FAQ block and schema markup:
+
+```yaml
+seoTitle: Optional SEO title (under ~60 characters)
+seoDescription: Optional meta description (under ~160 characters)
+faqs:
+  - question: A question a reader or model might ask
+    answer: A direct answer in one or two sentences.
+```
+
+The URL is `/guides/{slug}`.
 
 ## Deploy on Vercel
 
@@ -38,7 +50,9 @@ Guides will later live in `content/guides/`. That section is empty for now.
 3. Leave the build command as `next build` and the output as the default.
 4. Add a new `.mdx` review, commit, and redeploy — or preview the branch first.
 
-View and like counts are stored on the server. Locally they are written to `data/stats.json`. On Vercel the filesystem is ephemeral, so add an Upstash Redis (or Vercel KV) store and set either:
+View and like totals live in a JSON map of `slug → { views, likes }`:
 
-- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`, or
-- `KV_REST_API_URL` and `KV_REST_API_TOKEN`
+- Locally: `data/stats.json`
+- Production: Vercel Blob at `engagement/review-stats.json` when `BLOB_READ_WRITE_TOKEN` is set
+
+Create a Blob store in the Vercel project so that token is injected automatically. MDX frontmatter stays at 0; live counts are overlaid when pages load. A browser records one view per review in `localStorage` (`kaelnotes:viewed:<slug>`). Likes are also per-browser (`kaelnotes:liked:<slug>`).
