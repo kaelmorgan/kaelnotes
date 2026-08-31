@@ -25,7 +25,10 @@ export function CardStats({ slug, views, likes }: CardStatsProps) {
           typeof data.views === "number" &&
           typeof data.likes === "number"
         ) {
-          setStats({ views: data.views, likes: data.likes });
+          setStats({
+            views: Math.max(views, data.views),
+            likes: Math.max(likes, data.likes),
+          });
         }
       })
       .catch(() => {

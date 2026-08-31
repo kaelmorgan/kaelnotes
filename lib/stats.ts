@@ -1,12 +1,17 @@
 import fs from "fs";
 import path from "path";
-import { get, put } from "@vercel/blob";
+import { BlobPreconditionFailedError, get, put } from "@vercel/blob";
 import { connection } from "next/server";
 import type { ReviewSummary } from "./types";
 
 export type ReviewStats = {
   views: number;
   likes: number;
+};
+
+type StatsSnapshot = {
+  stats: Record<string, ReviewStats>;
+  etag?: string;
 };
 
 const BLOB_PATH = "engagement/review-stats.json";
@@ -16,7 +21,10 @@ function localStatsPath() {
 }
 
 function useBlobStore() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return (
+    process.env.NODE_ENV === "production" &&
+    Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+  );
 }
 
 function emptyStats(): ReviewStats {
@@ -55,48 +63,45 @@ function writeFileStats(stats: Record<string, ReviewStats>) {
   fs.writeFileSync(filePath, `${JSON.stringify(stats, null, 2)}\n`);
 }
 
-async function readBlobStats(): Promise<Record<string, ReviewStats>> {
+async function readBlobByAccess(access: "public" | "private") {
+  const result = await get(BLOB_PATH, { access, useCache: false });
+  if (!result || result.statusCode !== 200 || !result.stream) {
+    return null;
+  }
+  const text = await new Response(result.stream).text();
+  return {
+    stats: parseStatsMap(JSON.parse(text)),
+    etag: result.blob.etag,
+  } satisfies StatsSnapshot;
+}
+
+async function readBlobSnapshot(): Promise<StatsSnapshot> {
   try {
-    const result = await get(BLOB_PATH, {
-      access: "public",
-      useCache: false,
-    });
-    if (!result || result.statusCode !== 200 || !result.stream) {
-      return {};
-    }
-    const text = await new Response(result.stream).text();
-    return parseStatsMap(JSON.parse(text));
+    return (await readBlobByAccess("public")) ?? { stats: {} };
   } catch {
     try {
-      const result = await get(BLOB_PATH, {
-        access: "private",
-        useCache: false,
-      });
-      if (!result || result.statusCode !== 200 || !result.stream) {
-        return {};
-      }
-      const text = await new Response(result.stream).text();
-      return parseStatsMap(JSON.parse(text));
+      return (await readBlobByAccess("private")) ?? { stats: {} };
     } catch {
-      return {};
+      return { stats: {} };
     }
   }
 }
 
-async function writeBlobStats(stats: Record<string, ReviewStats>) {
+async function writeBlobStats(stats: Record<string, ReviewStats>, etag?: string) {
   await put(BLOB_PATH, JSON.stringify(stats), {
     access: "public",
     allowOverwrite: true,
     addRandomSuffix: false,
-    // Vercel Blob rejects values under 60 seconds.
     cacheControlMaxAge: 60,
     contentType: "application/json",
+    ...(etag ? { ifMatch: etag } : {}),
   });
 }
 
 async function loadAll(): Promise<Record<string, ReviewStats>> {
   if (useBlobStore()) {
-    return readBlobStats();
+    const snapshot = await readBlobSnapshot();
+    return snapshot.stats;
   }
   return readFileStats();
 }
@@ -105,6 +110,11 @@ async function saveAll(stats: Record<string, ReviewStats>) {
   if (useBlobStore()) {
     await writeBlobStats(stats);
     return;
+  }
+  if (process.env.VERCEL) {
+    throw new Error(
+      "Missing BLOB_READ_WRITE_TOKEN. Create a Blob store in the Vercel project.",
+    );
   }
   writeFileStats(stats);
 }
@@ -125,10 +135,28 @@ async function updateSlug(
   mutate: (current: ReviewStats) => ReviewStats,
 ): Promise<ReviewStats> {
   return withLock(async () => {
-    const all = await loadAll();
+    if (useBlobStore()) {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const snapshot = await readBlobSnapshot();
+        const next = mutate(snapshot.stats[slug] ?? emptyStats());
+        snapshot.stats[slug] = next;
+        try {
+          await writeBlobStats(snapshot.stats, snapshot.etag);
+          return next;
+        } catch (error) {
+          if (error instanceof BlobPreconditionFailedError) {
+            continue;
+          }
+          throw error;
+        }
+      }
+      throw new Error("Could not update stats");
+    }
+
+    const all = readFileStats();
     const next = mutate(all[slug] ?? emptyStats());
     all[slug] = next;
-    await saveAll(all);
+    writeFileStats(all);
     return next;
   });
 }
