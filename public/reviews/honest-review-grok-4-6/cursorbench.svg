@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 430" role="img" aria-labelledby="title desc">
+  <title id="title">CursorBench 3.2 score versus average cost per task</title>
+  <desc id="desc">Grok Extra High 70.8 percent at $2.81, Opus Max 70.0 percent at $8.23, Sol Max 67.2 percent at $5.69</desc>
+  <rect width="800" height="430" fill="#f7f4ee"/>
+  <text x="40" y="42" fill="#1c1917" font-family="Georgia, serif" font-size="20">CursorBench 3.2 - score against cost</text>
+  <text x="40" y="68" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Same coding-agent harness. Small score gaps; large cost gaps.</text>
+
+  <!-- left: score 65-72 mapped 90-360 height, y=340 is 65%, y=100 is 72%. 7 points = 240px, 1pt=34.286 -->
+  <text x="40" y="98" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Score (%)</text>
+  <line x1="90" y1="110" x2="90" y2="340" stroke="#e7e1d6"/>
+  <line x1="90" y1="340" x2="400" y2="340" stroke="#e7e1d6"/>
+
+  <!-- Grok 70.8: (70.8-65)*34.286 = 198.86, y=340-198.86=141.14, h=198.86 -->
+  <rect x="120" y="141" width="70" height="199" fill="#7a8a6a"/>
+  <text x="155" y="132" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">70.8%</text>
+  <text x="155" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Grok 4.6</text>
+  <text x="155" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Extra High</text>
+
+  <!-- Opus 70.0: 5*34.286=171.43, y=168.57 -->
+  <rect x="210" y="169" width="70" height="171" fill="#31475a"/>
+  <text x="245" y="160" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">70.0%</text>
+  <text x="245" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Opus 5</text>
+  <text x="245" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Max</text>
+
+  <!-- Sol 67.2: 2.2*34.286=75.43, y=264.57 -->
+  <rect x="300" y="265" width="70" height="75" fill="#8c7a66"/>
+  <text x="335" y="256" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">67.2%</text>
+  <text x="335" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">GPT-5.6 Sol</text>
+  <text x="335" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Max</text>
+
+  <!-- right: cost $0-9, 250px, $1=27.78, from y=340 -->
+  <text x="460" y="98" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Avg. cost per task</text>
+  <line x1="480" y1="110" x2="480" y2="340" stroke="#e7e1d6"/>
+  <line x1="480" y1="340" x2="760" y2="340" stroke="#e7e1d6"/>
+
+  <!-- Grok $2.81 = 78.05 -->
+  <rect x="510" y="262" width="70" height="78" fill="#7a8a6a"/>
+  <text x="545" y="253" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">$2.81</text>
+  <text x="545" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Grok 4.6</text>
+  <text x="545" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">46 steps</text>
+
+  <!-- Opus $8.23 = 228.6 -->
+  <rect x="600" y="111" width="70" height="229" fill="#31475a"/>
+  <text x="635" y="102" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">$8.23</text>
+  <text x="635" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Opus 5</text>
+  <text x="635" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">78 steps</text>
+
+  <!-- Sol $5.69 = 158.1 -->
+  <rect x="690" y="182" width="70" height="158" fill="#8c7a66"/>
+  <text x="725" y="173" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">$5.69</text>
+  <text x="725" y="360" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">GPT-5.6 Sol</text>
+  <text x="725" y="376" text-anchor="middle" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">48 steps</text>
+
+  <text x="40" y="412" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Source: CursorBench 3.2 as compiled in public write-ups, August 2026. Cursor notes small score differences may not be statistically meaningful.</text>
+</svg>

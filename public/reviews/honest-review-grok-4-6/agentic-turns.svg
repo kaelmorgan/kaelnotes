@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" role="img" aria-labelledby="title desc">
+  <title id="title">Long-horizon agentic work: average turns and input tokens</title>
+  <desc id="desc">Grok 4.6 about 53 turns and 0.5 billion input tokens versus Claude Opus 5 about 103 turns and 2.0 billion input tokens</desc>
+  <rect width="800" height="360" fill="#f7f4ee"/>
+  <text x="40" y="42" fill="#1c1917" font-family="Georgia, serif" font-size="20">Long-horizon work - turns and tokens</text>
+  <text x="40" y="68" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Artificial Analysis AA-Briefcase style measurement: how much looping it takes to finish.</text>
+
+  <!-- Turns -->
+  <text x="40" y="110" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Average turns to finish</text>
+  <text x="40" y="148" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Grok 4.6 (high)</text>
+  <rect x="220" y="128" width="212" height="28" fill="#7a8a6a"/>
+  <text x="442" y="148" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">~53</text>
+
+  <text x="40" y="196" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Claude Opus 5 (max)</text>
+  <rect x="220" y="176" width="412" height="28" fill="#31475a"/>
+  <text x="642" y="196" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">~103</text>
+
+  <!-- Tokens -->
+  <text x="40" y="248" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Average input tokens consumed</text>
+  <text x="40" y="286" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Grok 4.6 (high)</text>
+  <rect x="220" y="266" width="120" height="28" fill="#7a8a6a"/>
+  <text x="350" y="286" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">~0.5B</text>
+
+  <text x="40" y="334" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Claude Opus 5 (max)</text>
+  <rect x="220" y="314" width="480" height="28" fill="#31475a"/>
+  <text x="710" y="334" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">~2.0B</text>
+</svg>

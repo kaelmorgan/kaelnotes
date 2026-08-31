@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-labelledby="title desc">
+  <title id="title">List API price per million output tokens</title>
+  <desc id="desc">Grok 4.6 $6, Claude Opus 5 $25, GPT-5.6 Sol $30, Claude Fable 5 $50</desc>
+  <rect width="800" height="400" fill="#f7f4ee"/>
+  <text x="40" y="42" fill="#1c1917" font-family="Georgia, serif" font-size="20">List API price, output tokens</text>
+  <text x="40" y="68" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">USD per 1 million output tokens. Reasoning workloads spend most of the bill here.</text>
+
+  <line x1="40" y1="320" x2="760" y2="320" stroke="#e7e1d6"/>
+
+  <!-- scale: $50 = 210px height. $1 = 4.2px. bars from y=320 down -->
+  <!-- Grok $6 = 25.2 -->
+  <rect x="90" y="294.8" width="120" height="25.2" fill="#7a8a6a"/>
+  <text x="150" y="340" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Grok 4.6</text>
+  <text x="150" y="286" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">$6</text>
+
+  <!-- Opus $25 = 105 -->
+  <rect x="256" y="215" width="120" height="105" fill="#31475a"/>
+  <text x="316" y="340" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Opus 5</text>
+  <text x="316" y="206" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">$25</text>
+
+  <!-- Sol $30 = 126 -->
+  <rect x="422" y="194" width="120" height="126" fill="#8c7a66"/>
+  <text x="482" y="340" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">GPT-5.6 Sol</text>
+  <text x="482" y="185" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">$30</text>
+
+  <!-- Fable $50 = 210 -->
+  <rect x="588" y="110" width="120" height="210" fill="#4d6478"/>
+  <text x="648" y="340" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">Fable 5</text>
+  <text x="648" y="101" text-anchor="middle" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">$50</text>
+
+  <text x="40" y="378" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Input list prices: Grok $2, Opus $5, Sol $5, Fable $10. Cursor Pro usage is a pool, not this invoice - but the shape of the model still matters.</text>
+</svg>

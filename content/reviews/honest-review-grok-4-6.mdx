@@ -1,0 +1,191 @@
+---
+title: "Honest review on AI model Grok 4.6"
+slug: honest-review-grok-4-6
+excerpt: "A Cursor Pro user’s review of Grok 4.6: why it is my default coding model, how the public scores sit against Claude Opus 5, Claude Fable 5, and GPT-5.6 Sol, and what Medium effort actually feels like when you still have to ship."
+category: Software
+tags:
+  - grok-4-6
+  - grok
+  - cursor
+  - spacexai
+  - claude-opus-5
+  - claude-fable-5
+  - gpt-5-6-sol
+  - vibe-coding
+coverImage: /reviews/honest-review-grok-4-6/intelligence-index.png
+seoTitle: "Honest review of Grok 4.6 in Cursor — vs Opus 5, Fable 5, and GPT-5.6 Sol"
+seoDescription: "A practical Cursor Pro review of Grok 4.6: Artificial Analysis scores, CursorBench cost, Medium effort without Fast, and why it lasts the month when you still test the work yourself."
+publishedAt: "2026-09-01"
+---
+
+This is a review from inside one workflow, not a lab bake-off. I write and ship product in **Cursor**, on the **Pro** plan at **US$20** a month. The question is not “which model wins the internet.” It is whether Grok 4.6 can take a clear brief, respect the repo, and leave me with enough usage to keep shipping through the month.
+
+I am writing this in early September 2026. The numbers below are a snapshot from August 2026 public sources. Leaderboards move. Effort settings change the score. Treat the tables as orientation, then weigh them against how you actually work.
+
+## Why Grok?
+
+A lot of you will ask this first. Why not **Claude Opus 5**? Why not **GPT-5.6 Sol**? Some of you will also ask about **Claude Fable 5**, which sits even higher on several charts.
+
+I am a vibe coder and a Cursor user. Cursor was acquired by SpaceX; the deal closed in August 2026. Grok lives under **Cursor Models**, and that pool has been generous enough that I can treat the editor as my daily driver instead of hopping to a native CLI because someone on a forum said I “should.”
+
+Native providers are often generous with their own models. That part of the internet is not wrong. Claude Code will treat Opus as a first-class citizen. Codex will treat GPT as a first-class citizen. Cursor also ships first-class models of its own — **Grok 4.6**, **Grok 4.5**, and **Composer 2.5** — and those are the ones that have to last me until billing resets.
+
+If you want a one-line answer: I picked Grok because it is frontier-close, cheap in tokens for how it behaves, and included in the Cursor usage I already pay for.
+
+## Who this review is not for
+
+If you want fully autonomous vibe coding — a big-picture prompt, then you sit back, drink coffee, and hope the agent delivers a finished product you like without you steering — this review is not written for you.
+
+That style can work for throwaway prototypes. It is a poor way to judge a model you will live with. Before a project starts, I talk the architecture through with the model and we write it down: a `CLAUDE.md` file and `.cursorrules`, so the repo has a source of truth. During the session I `@` those files. After the session I still click through the product myself.
+
+Grok 4.6 is strong in that loop. It is not a substitute for the loop.
+
+## Grok factsheet, before the verdict
+
+Before I tell you how it feels in the editor, here is how Grok 4.6 sits against the three names people keep putting next to it.
+
+These are not identical test conditions. Artificial Analysis scores Grok 4.6 at **high** effort, and scores Opus 5, Fable 5, and GPT-5.6 Sol at **max** (Fable 5 with a fallback configuration on some evals). That is how the labs publish their “top” numbers. It is a fair buyer’s comparison. It is not a fair compute-matched comparison.
+
+### Intelligence Index
+
+[Artificial Analysis](https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis) compresses nine evaluations into one Intelligence Index: knowledge work, terminal coding, science questions, long-context reliability, and similar economically useful tasks.
+
+<figure>
+  <img src="/reviews/honest-review-grok-4-6/intelligence-index.png" alt="Bar chart of Artificial Analysis Intelligence Index scores: Opus 5 at 63, Fable 5 at 62, Grok 4.6 and GPT-5.6 Sol at 61" />
+  <figcaption>The frontier is a two-point band. Opus 5 leads; Grok 4.6 ties GPT-5.6 Sol. Drawn from Artificial Analysis’s August 2026 write-up of Grok 4.6.</figcaption>
+</figure>
+
+| Model (published top setting) | Intelligence Index |
+| --- | ---: |
+| Claude Opus 5 (max) | **63** |
+| Claude Fable 5 (max, with fallback) | **62** |
+| Grok 4.6 (high) | **61** |
+| GPT-5.6 Sol (max) | **61** |
+
+What this chart is saying: nobody in this group is a “mid” model. Grok 4.6 is inside the frontier cluster, five points above Grok 4.5’s 56 on the same index. Two points behind Opus 5 is real, and it is also small enough that **how the model spends tokens** will decide your month more than the index will.
+
+Grok 4.6 also posted **94.9%** on GPQA Diamond in Artificial Analysis’s run — graduate-level science questions — which is a reminder that “coding model” is not the whole story. I do not use it as a chemistry tutor. I do use the implication: it can hold a hard brief without immediately collapsing into filler.
+
+### Price on the API, and why Cursor users should still look at it
+
+On the public API, Grok 4.6 is listed at **US$2 / US$6** per million input/output tokens. Claude Opus 5 is **US$5 / US$25**. GPT-5.6 Sol is **US$5 / US$30**. Claude Fable 5 is in another bracket again, commonly listed around **US$10 / US$50**.
+
+<figure>
+  <img src="/reviews/honest-review-grok-4-6/api-output-price.png" alt="Bar chart of list API output prices: Grok 4.6 $6, Opus 5 $25, GPT-5.6 Sol $30, Fable 5 $50 per million tokens" />
+  <figcaption>Output tokens are where reasoning models burn money. Grok’s list price is the short bar on purpose.</figcaption>
+</figure>
+
+On Cursor Pro I am not paying that invoice line by line. I am drawing from a monthly usage pool. The API chart still matters, because a verbose, overthinking model burns that pool faster even when the sticker says “included.”
+
+Artificial Analysis measured about **US$0.84 per task** to run Grok 4.6 on its index, more than **60%** below Opus 5 and Sol at their top settings. That is the independent version of the thing I feel in the usage meter.
+
+### CursorBench — the chart that matches my job
+
+CursorBench 3.2 is an in-editor coding-agent test. It is the closest public number to “what happens when this model is the agent in Cursor.” Public compilations of the same run (including [Ginger Labs’ comparison](https://gingerlabs.ai/blog/grok-46-vs-opus-5-vs-gpt-56-sol-best-agentic-ai-models)) look like this:
+
+<figure>
+  <img src="/reviews/honest-review-grok-4-6/cursorbench.png" alt="Two panel chart: CursorBench scores clustered near 70 percent, costs much higher for Opus 5 than Grok 4.6" />
+  <figcaption>Left: the scores sit on top of each other. Right: the bill does not. Cursor itself warns that small score gaps may not be statistically meaningful.</figcaption>
+</figure>
+
+| Model and setting | CursorBench 3.2 | Avg. cost / task | Avg. steps |
+| --- | ---: | ---: | ---: |
+| Grok 4.6 Extra High | **70.8%** | **US$2.81** | **46** |
+| Grok 4.6 High | 69.9% | US$2.34 | 39 |
+| Claude Opus 5 Max | 70.0% | US$8.23 | 78 |
+| Claude Fable 5 Max (SpaceXAI table) | 70.5% | — | — |
+| GPT-5.6 Sol Max | 67.2% | US$5.69 | 48 |
+
+Read the two panels together. Grok Extra High is a fraction of a point above Opus Max. That is not a coronation. The useful fact is the right-hand panel: similar completion, about **one-third** the measured task cost, and fewer steps. High effort — closer to how I actually run it — is still 69.9% at US$2.34.
+
+That is the shape of a model that does not love to overthink. It takes a swing, uses the tools, and stops.
+
+### Long-horizon work: fewer turns, not just cheaper tokens
+
+On Artificial Analysis’s long-horizon knowledge-work measurement (AA-Briefcase), Grok 4.6 high landed around **1,577 Elo**, just ahead of Fable 5’s **1,574** and behind Opus 5 max at **1,715**. On GDPval-AA v2, Grok 4.6 high is about **1,753 Elo**, second to Opus 5, with Fable 5 and Sol close behind.
+
+The Elo numbers are close. The **path** to those numbers is not.
+
+<figure>
+  <img src="/reviews/honest-review-grok-4-6/agentic-turns.png" alt="Comparison of average turns and input tokens: Grok 4.6 about 53 turns and 0.5 billion tokens versus Opus 5 about 103 turns and 2.0 billion tokens" />
+  <figcaption>Same class of long agentic work: Grok finishes in roughly half the turns and a quarter of the input tokens versus Opus 5 max, per Artificial Analysis.</figcaption>
+</figure>
+
+This is the chart I wish more “just use Claude” threads would put under the screenshot of a leaderboard. If a model needs twice the conversation to land a similar deliverable, you pay twice even before the per-token rate. Grok’s habit of staying tight is not a personality quirk. It is the product.
+
+### Software-engineering evals, with the ugly rows included
+
+Grok is not uniformly on top of hard repository work. SpaceXAI’s own launch table, and independent DeepSWE runs, are honest about that.
+
+| Benchmark | What it is measuring | Grok 4.6 | Claude Fable 5 | GPT-5.6 Sol | Claude Opus 5 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| DeepSWE v1.1 | Long-horizon, contamination-resistant SWE tasks | 65.9% | 70.0% | **73%** (max, public runs ~72.7–73) | ~68.8% (Anthropic card) / higher in some harnesses |
+| FrontierCode v1.1 Extended | Production-quality coding bar | 61.3% | **63.6–64.9%** | 60.6% | 63.6% (Anthropic card, Extended) |
+| Terminal-Bench v2.1 | Command-line coding (older, widely cited) | 88.4% | — | **89.5%** (xhigh) | 89.1% (max) |
+| Terminal-Bench v3.0 | Harder terminal suite | 26.0% | 34.1% | **34.6%** | — |
+| SWE-bench Pro | Issue resolution in real repos | — | **~80%** (widely cited for Fable 5) | 64.6% (OpenAI) | **79.2%** (Anthropic card) |
+
+Two warnings so this table does not become a meme:
+
+1. **Terminal-Bench v2.1 and v3.0 are different tests.** Grok at 88.4% on v2.1 and 26% on v3.0 is not a contradiction. v3.0 is a steeper cliff for everyone; Grok falls harder on it than Fable 5 and Sol.
+2. **DeepSWE and SWE-bench Pro reward the models that grind on gnarly repos.** If your days are migrations across a 50-million-line monolith, Fable 5 and Opus 5 are the names the evals keep returning. If your days are product work in a repo you already understand, CursorBench and token discipline are closer to the truth.
+
+Grok 4.6’s public shape is: **frontier on the composite index, cheap and short-winded on agents, a step behind on the nastiest SWE and terminal suites.** That matches a Cursor Pro user who prompts with evidence and still tests the build.
+
+## Some background — how I got here
+
+I am on Cursor Pro. Usage has to last the month. That constraint is part of the review. A model that is 2% “smarter” and empties the bar in ten days is not smarter for me.
+
+I started on **Auto**. Then **Composer 2.5** shipped. It was generous and good, and I used it as the default.
+
+Then the acquisition, then **Grok 4.5**. That was a real jump from what Grok had been. On **Medium** effort it covered most of my scenarios: features, refactors, UI, the ordinary mess of a Next.js app.
+
+I did not come into 4.6 from disappointment. I came in from a model that already worked.
+
+## Grok 4.6 in the editor
+
+When Grok 4.6 arrived in Cursor I switched immediately. The expectation was simple: 4.5 already cleared most of the work; 4.6 should clear it **cleaner**.
+
+That is roughly what happened. 4.5 felt like it could finish almost every task I handed it. 4.6 finishes those same tasks with a better result — fewer half-migrations, fewer “I will also rewrite this unrelated file,” tighter adherence to the files I pointed at. It has been my default for coding since.
+
+How I run it:
+
+- **Medium** effort. I do not need Extra High for most application work.
+- **Fast** toggle **off**. Fast costs more in the pool for a speed I do not need while I am reading diffs.
+- Frequent `@` of `CLAUDE.md` and the other source-of-truth files, so it does not invent a second architecture.
+
+I am near the end of the month as I write this. **Cursor Models usage is at 47.7%.** That is the practical score. Medium, Fast off, good references, and I still have more than half the bar left. A frontier model that behaves like this is the point of paying Cursor US$20 instead of treating the editor as a thin wrapper around someone else’s CLI quota.
+
+When the prompt is vague, Grok 4.6 will still guess. Every frontier model will. When the prompt has structure — the file, the constraint, the screenshot, the failing test — it delivers with a kind of quiet competence. It is not a lecture machine. It does not spend a page narrating why it is about to import a function. It just does the work.
+
+That is what I mean by not verbose and not overthinking. The public turn-counts are the lab version of the same habit.
+
+## How I actually work with it
+
+The model is only half the setup.
+
+1. **Write the contract first.** Architecture, naming, “do not invent a new pattern,” test expectations — into `CLAUDE.md` and `.cursorrules` before the feature branch gets noisy.
+2. **Point at evidence.** `@` the contract, the file, the error. Do not describe a ghost.
+3. **Keep the session in one job.** A sprawling chat that starts as a button and ends as a rewrite of auth is how usage dies and bugs hide.
+4. **Test like you do not trust it.** Because you should not. I still click the flow. I still check the other routes that share the state. You can ask it to add a unit test after a change. You still have to run the product.
+
+Grok 4.6 rewards that discipline. It punishes the coffee-and-hope style in the usual ways: a plausible diff that missed an edge state, a misunderstanding of a constraint you never wrote down, a bug another model would also have shipped with a straight face.
+
+## Trade-offs I would not hide
+
+- **Context window.** 500k tokens versus about 1M on Opus 5 and 1.05M on Sol. For a normal app session this has not bitten me. For dumping an entire monorepo into one prompt, the others have more headroom.
+- **Hard SWE and Terminal-Bench v3.0.** If your work looks like the bottom of that table, do not buy the Intelligence Index and assume the repo will yield. Try Opus 5 or Fable 5 on a real task from your backlog before you standardise.
+- **You still have to read the diff.** Grok is less theatrical than some Claude settings I have used. Quiet models hide mistakes in ordinary-looking code. That is not unique to Grok. It is easier to miss because there is less waffle to trigger suspicion.
+- **This is not a Claude Code review.** Cursor Models usage, Medium effort, Fast off, Pro plan. A different harness will feel different. People who say “just use the native CLI” are describing a different bill and a different product. They can be right about *their* setup without being right about yours.
+
+## Conclusion
+
+Always check the work yourself. You can put a line in `CLAUDE.md` that says: after a functional change, write or update a test and run it. You will still need to use the thing as a user.
+
+With that discipline, Grok 4.6 does not disappoint me. It will occasionally misunderstand a brief or leave a bug. So will Opus 5. So will GPT-5.6 Sol. The interesting difference is not perfection. It is whether the model is **frontier enough**, **cheap enough in tokens**, and **available enough in the tool you already live in**.
+
+Do not simply trust people online. Many will tell you there is no point using Cursor for Claude, and that you should just use Claude Code or Codex. They are right that native providers are generous on their own models. They skip the next sentence: Cursor also provides its own models — Grok 4.6, Grok 4.5, Composer 2.5 — and they are serious. On a US$20 Pro plan, with Medium effort and Fast off, Grok 4.6 has been the default that lets me keep shipping without watching the usage bar like a fuel gauge.
+
+Grok 4.7 has been talked about as a near-term follow-up; public comments after 4.6 pointed at a few weeks, not a dated launch. I would be glad to try it. I am not waiting on a rumour to do the work. 4.6 is already in the editor, already on the leaderboard, and already at 47.7% of my month.
+
+Understand the model. Read the output. Run the product. That is the review.
