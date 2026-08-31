@@ -8,34 +8,21 @@ type ViewCountProps = {
   initialCount: number;
 };
 
-const inFlight = new Map<string, Promise<number | null>>();
-
 function storageKey(slug: string) {
   return `kaelnotes:viewed:${slug}`;
 }
 
-function loadStats(slug: string, alreadyViewed: boolean) {
-  const existing = inFlight.get(slug);
-  if (existing) {
-    return existing;
+async function requestStats(slug: string, method: "GET" | "POST") {
+  const response = await fetch(`/api/stats/${encodeURIComponent(slug)}`, {
+    method,
+    headers: method === "POST" ? { "Content-Type": "application/json" } : undefined,
+    body: method === "POST" ? JSON.stringify({ action: "view" }) : undefined,
+  });
+  if (!response.ok) {
+    return null;
   }
-
-  const request = fetch(`/api/stats/${encodeURIComponent(slug)}`, {
-    method: alreadyViewed ? "GET" : "POST",
-    headers: alreadyViewed ? undefined : { "Content-Type": "application/json" },
-    body: alreadyViewed ? undefined : JSON.stringify({ action: "view" }),
-  })
-    .then((response) => (response.ok ? response.json() : null))
-    .then((data: { views?: number } | null) => {
-      if (!alreadyViewed) {
-        window.localStorage.setItem(storageKey(slug), "1");
-      }
-      return typeof data?.views === "number" ? data.views : null;
-    })
-    .catch(() => null);
-
-  inFlight.set(slug, request);
-  return request;
+  const data = (await response.json()) as { views?: number };
+  return typeof data.views === "number" ? data.views : null;
 }
 
 export function ViewCount({ slug, initialCount }: ViewCountProps) {
@@ -45,12 +32,36 @@ export function ViewCount({ slug, initialCount }: ViewCountProps) {
     let active = true;
     setCount(initialCount);
 
-    const alreadyViewed = window.localStorage.getItem(storageKey(slug)) === "1";
-    loadStats(slug, alreadyViewed).then((views) => {
-      if (active && typeof views === "number") {
+    const marked = window.localStorage.getItem(storageKey(slug)) === "1";
+
+    (async () => {
+      if (marked && initialCount > 0) {
+        const views = await requestStats(slug, "GET");
+        if (active && views !== null) {
+          setCount(views);
+        }
+        return;
+      }
+
+      if (marked) {
+        const current = await requestStats(slug, "GET");
+        if (current && current > 0) {
+          if (active) {
+            setCount(current);
+          }
+          return;
+        }
+      }
+
+      const views = await requestStats(slug, "POST");
+      if (views === null) {
+        return;
+      }
+      window.localStorage.setItem(storageKey(slug), "1");
+      if (active) {
         setCount(views);
       }
-    });
+    })();
 
     return () => {
       active = false;

@@ -16,10 +16,7 @@ function localStatsPath() {
 }
 
 function useBlobStore() {
-  return (
-    process.env.NODE_ENV === "production" &&
-    Boolean(process.env.BLOB_READ_WRITE_TOKEN)
-  );
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 function emptyStats(): ReviewStats {
@@ -32,7 +29,9 @@ function parseStatsMap(value: unknown): Record<string, ReviewStats> {
   }
 
   const stats: Record<string, ReviewStats> = {};
-  for (const [slug, entry] of Object.entries(value as Record<string, Partial<ReviewStats>>)) {
+  for (const [slug, entry] of Object.entries(
+    value as Record<string, Partial<ReviewStats>>,
+  )) {
     stats[slug] = {
       views: Number(entry?.views) || 0,
       likes: Math.max(0, Number(entry?.likes) || 0),
@@ -59,7 +58,7 @@ function writeFileStats(stats: Record<string, ReviewStats>) {
 async function readBlobStats(): Promise<Record<string, ReviewStats>> {
   try {
     const result = await get(BLOB_PATH, {
-      access: "private",
+      access: "public",
       useCache: false,
     });
     if (!result || result.statusCode !== 200 || !result.stream) {
@@ -68,16 +67,29 @@ async function readBlobStats(): Promise<Record<string, ReviewStats>> {
     const text = await new Response(result.stream).text();
     return parseStatsMap(JSON.parse(text));
   } catch {
-    return {};
+    try {
+      const result = await get(BLOB_PATH, {
+        access: "private",
+        useCache: false,
+      });
+      if (!result || result.statusCode !== 200 || !result.stream) {
+        return {};
+      }
+      const text = await new Response(result.stream).text();
+      return parseStatsMap(JSON.parse(text));
+    } catch {
+      return {};
+    }
   }
 }
 
 async function writeBlobStats(stats: Record<string, ReviewStats>) {
   await put(BLOB_PATH, JSON.stringify(stats), {
-    access: "private",
+    access: "public",
     allowOverwrite: true,
     addRandomSuffix: false,
-    cacheControlMaxAge: 0,
+    // Vercel Blob rejects values under 60 seconds.
+    cacheControlMaxAge: 60,
     contentType: "application/json",
   });
 }

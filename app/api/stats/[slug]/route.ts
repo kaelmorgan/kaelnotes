@@ -54,21 +54,26 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   }
 
-  if (action === "view") {
-    const stats = isAutomatedBrowser(request)
-      ? await getStats(slug)
-      : await incrementViews(slug);
+  try {
+    if (action === "view") {
+      const stats = isAutomatedBrowser(request)
+        ? await getStats(slug)
+        : await incrementViews(slug);
+      revalidateStatsPaths(slug);
+      return NextResponse.json(stats);
+    }
+
+    if (action === "like") {
+      const stats = await incrementLikes(slug, 1);
+      revalidateStatsPaths(slug);
+      return NextResponse.json(stats);
+    }
+
+    const stats = await incrementLikes(slug, -1);
     revalidateStatsPaths(slug);
     return NextResponse.json(stats);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not save stats";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  if (action === "like") {
-    const stats = await incrementLikes(slug, 1);
-    revalidateStatsPaths(slug);
-    return NextResponse.json(stats);
-  }
-
-  const stats = await incrementLikes(slug, -1);
-  revalidateStatsPaths(slug);
-  return NextResponse.json(stats);
 }

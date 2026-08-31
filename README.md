@@ -55,4 +55,4 @@ View and like totals live in a JSON map of `slug → { views, likes }`:
 - Locally: `data/stats.json`
 - Production: Vercel Blob at `engagement/review-stats.json` when `BLOB_READ_WRITE_TOKEN` is set
 
-Create a Blob store in the Vercel project so that token is injected automatically. MDX frontmatter stays at 0; live counts are overlaid when pages load. A browser records one view per review in `localStorage` (`kaelnotes:viewed:<slug>`). Likes are also per-browser (`kaelnotes:liked:<slug>`).
+Create a Blob store in the Vercel project (Storage → Blob) so `BLOB_READ_WRITE_TOKEN` is set. Without that token on production, counts cannot persist. MDX frontmatter stays at 0; live counts are overlaid when pages load. A browser records one view per review in `localStorage` (`kaelnotes:viewed:<slug>`). Likes are also per-browser (`kaelnotes:liked:<slug>`).

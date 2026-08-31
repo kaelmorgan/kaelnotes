@@ -18,8 +18,45 @@ export function LikeButton({ slug, initialCount }: LikeButtonProps) {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
+    let active = true;
+    const storedLiked = window.localStorage.getItem(storageKey(slug)) === "1";
+    setLiked(storedLiked);
     setCount(initialCount);
-    setLiked(window.localStorage.getItem(storageKey(slug)) === "1");
+
+    if (!storedLiked || initialCount > 0) {
+      return;
+    }
+
+    fetch(`/api/stats/${encodeURIComponent(slug)}`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then(async (data: { likes?: number } | null) => {
+        if (!active) {
+          return;
+        }
+        if (typeof data?.likes === "number" && data.likes > 0) {
+          setCount(data.likes);
+          return;
+        }
+        const response = await fetch(`/api/stats/${encodeURIComponent(slug)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "like" }),
+        });
+        if (!response.ok) {
+          return;
+        }
+        const next = (await response.json()) as { likes?: number };
+        if (active && typeof next.likes === "number") {
+          setCount(next.likes);
+        }
+      })
+      .catch(() => {
+        // Keep the last known count if the request fails.
+      });
+
+    return () => {
+      active = false;
+    };
   }, [slug, initialCount]);
 
   async function toggle() {
