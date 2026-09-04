@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" role="img" aria-labelledby="title desc">
+  <title id="title">How Opus 5 worked on a Python LLM testing framework</title>
+  <desc id="desc">Plan architecture, write structured modules, run tests, present results</desc>
+  <rect width="800" height="280" fill="#f7f4ee"/>
+  <text x="40" y="40" fill="#1c1917" font-family="Georgia, serif" font-size="18">One loop in Claude Code</text>
+  <text x="40" y="62" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">What Opus 5 actually did on the Python LLM testing framework.</text>
+
+  <rect x="40" y="96" width="160" height="108" rx="8" fill="#31475a"/>
+  <text x="120" y="140" text-anchor="middle" fill="#fffcf7" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">1. Plan</text>
+  <text x="120" y="164" text-anchor="middle" fill="#d6e0e8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Architecture first</text>
+  <text x="120" y="180" text-anchor="middle" fill="#d6e0e8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Clear module map</text>
+
+  <polygon points="214,150 232,140 232,160" fill="#c4b8a8"/>
+
+  <rect x="246" y="96" width="160" height="108" rx="8" fill="#4d6478"/>
+  <text x="326" y="140" text-anchor="middle" fill="#fffcf7" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">2. Code</text>
+  <text x="326" y="164" text-anchor="middle" fill="#d6e0e8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Structured Python</text>
+  <text x="326" y="180" text-anchor="middle" fill="#d6e0e8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Follows the plan</text>
+
+  <polygon points="420,150 438,140 438,160" fill="#c4b8a8"/>
+
+  <rect x="452" y="96" width="160" height="108" rx="8" fill="#7a8a6a"/>
+  <text x="532" y="140" text-anchor="middle" fill="#fffcf7" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">3. Run tests</text>
+  <text x="532" y="164" text-anchor="middle" fill="#eef2ea" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">It runs them itself</text>
+  <text x="532" y="180" text-anchor="middle" fill="#eef2ea" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Not just should work</text>
+
+  <polygon points="626,150 644,140 644,160" fill="#c4b8a8"/>
+
+  <rect x="658" y="96" width="102" height="108" rx="8" fill="#8c7a66"/>
+  <text x="709" y="140" text-anchor="middle" fill="#fffcf7" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">4. Show</text>
+  <text x="709" y="164" text-anchor="middle" fill="#f3ebe0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">Test output</text>
+  <text x="709" y="180" text-anchor="middle" fill="#f3ebe0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11">in the session</text>
+
+  <text x="40" y="246" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">The quality is in steps 1-4. The wait is also in steps 1-4. That is the trade.</text>
+</svg>

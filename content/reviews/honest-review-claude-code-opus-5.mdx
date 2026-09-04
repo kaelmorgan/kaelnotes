@@ -1,0 +1,180 @@
+---
+title: "Honest review on Claude Code with Opus 5"
+slug: honest-review-claude-code-opus-5
+excerpt: "A review of Claude Code with Opus 5 from a Python LLM testing-framework build: the public scores against Fable 5.1, Fable 5, GPT-6 Astra, GPT-5.6 Sol, and Grok 4.6, why Opus is cheaper than Fable, and why the wait still hurts."
+category: Software
+tags:
+  - claude-opus-5
+  - claude-code
+  - anthropic
+  - claude-fable-5
+  - claude-fable-5-1
+  - claude-mythos-5
+  - gpt-6-astra
+  - gpt-5-6-sol
+  - grok-4-6
+  - vibe-coding
+coverImage: /reviews/honest-review-claude-code-opus-5/intelligence-index.png
+seoTitle: "Honest review of Claude Code with Opus 5 — vs Fable 5.1, GPT-6 Astra, and Grok 4.6"
+seoDescription: "Claude Code with Opus 5 on a Python LLM testing framework: Artificial Analysis scores, token cost versus Fable 5, the quality of the architecture, and why the thinking time still makes you wait."
+publishedAt: "2026-09-04"
+---
+
+Claude Code has sat at the top of the agentic coding stack for a long time. A lot of people wish they were already living in it. Pair that harness with **Opus 5** — still one of the best frontier models you can actually ship with — and yes, it can do wonders.
+
+This is not a lab bake-off. I used Claude Code with Opus 5 to build an **LLM testing framework in Python**. The question is whether the pairing is worth the wait, the tokens, and the moments it still reads you wrongly.
+
+I am writing this in early September 2026. Leaderboards move. Effort settings change the score. ChatGPT 6, in public, is **GPT-6 Astra**. Treat the tables as orientation, then weigh them against how you actually sit at the desk.
+
+## Opus 5 factsheet, before the verdict
+
+People will ask immediately: why not **Fable 5.1**? Why not **GPT-6 Astra** in Codex? Why not **Grok 4.6** in Cursor?
+
+These are not identical test conditions. Artificial Analysis scores the Fable models at **max** with a fallback configuration on some evals. Opus 5 is scored at **max**. Grok 4.6 is scored at **high**. That is how the labs publish their “top” numbers. Fair for a buyer. Not fair if you want a compute-matched fight.
+
+### Intelligence Index
+
+[Artificial Analysis](https://artificialanalysis.ai/articles/claude-fable-5-1) compresses nine evaluations into one Intelligence Index: knowledge work, terminal coding, science questions, long-context reliability, and similar economically useful tasks. Fable 5.1’s 66 is from their 1 September 2026 write-up. GPT-6 Astra’s 61 is from their [3 September 2026 Astra article](https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra).
+
+<figure>
+  <img src="/reviews/honest-review-claude-code-opus-5/intelligence-index.png" alt="Bar chart of Artificial Analysis Intelligence Index scores: Fable 5.1 at 66, Opus 5 at 63, Fable 5 at 62, GPT-5.6 Sol, GPT-6 Astra and Grok 4.6 at 61" />
+  <figcaption>Fable 5.1 is the peak. Opus 5 is second. The rest of the frontier is a two-point band at 61–62. Snapshot, early September 2026.</figcaption>
+</figure>
+
+| Model (published top setting) | Intelligence Index |
+| --- | ---: |
+| Claude Fable 5.1 (max, with fallback) | **66** |
+| Claude Opus 5 (max) | **63** |
+| Claude Fable 5 (max, with fallback) | **62** |
+| GPT-5.6 Sol (max) | 61 |
+| GPT-6 Astra (max) | 61 |
+| Grok 4.6 (high) | 61 |
+
+What this chart is saying: Opus 5 is not the “smartest” name on the board. Fable 5.1 took that. Three points is real. It is also not a mid-tier model. It sits above Sol, Astra, and Grok on the composite, and it sits **next to Fable 5** while costing half Fable’s list price.
+
+If you only remember one line: **Fable 5.1 wins the index. Opus 5 is the one you can actually use every day — and you pay a fraction of Mythos-class money to sit that close.**
+
+### Price on the API, and why Claude Code users should still look at it
+
+On the public API, Opus 5 is **US$5 / US$25** per million input/output tokens — same as Opus 4.8. Fable 5, Fable 5.1, and **Mythos 5 / 5.1** are **US$10 / US$50**. That is the same sticker as Fable; Mythos is the restricted twin (Project Glasswing), not a cheaper cousin. GPT-6 Astra is also **US$10 / US$50**. GPT-5.6 Sol has been listed around **US$5 / US$30**. Grok 4.6 is **US$2 / US$6**.
+
+Put plainly: you pay **half** the Mythos-class list rate. For coding, Opus 5 is close enough to that tier that the extra money is usually for access and edge cases, not for a different species of model. Most of us cannot even get Mythos. We still get something that behaves like it, at a fraction of the bill.
+
+Anthropic also sells Opus 5 **Fast mode** at twice the token price (**US$10 / US$50**) for about 2.5× speed. That is Fable money, for less waiting. I did not run this review on Fast. The slowness I describe later is the default Claude Code loop.
+
+<figure>
+  <img src="/reviews/honest-review-claude-code-opus-5/api-output-price.png" alt="Bar chart of list API output prices: Grok 4.6 $6, Opus 5 $25, GPT-5.6 Sol $30, Fable 5 and 5.1 $50, GPT-6 Astra $50 per million tokens" />
+  <figcaption>Output tokens are where thinking models burn money. Opus is half of Fable on the sticker. Fast mode is not.</figcaption>
+</figure>
+
+On Claude Code you are not always staring at that invoice line by line. You are still drawing down a plan, credits, or API usage. A model that thinks for a long time still spends. The sticker is only half the story. **Token habits** are the other half.
+
+### Token efficiency: cheaper than Fable, not the cheapest in the room
+
+This is the part people skip when they only screenshot the Intelligence Index.
+
+Artificial Analysis priced a full run of that index. Opus 5 at max landed around **US$2.34 per task**. Fable 5 at max was **US$3.14**. Fable 5.1 at max was **US$3.76** — about 1.6× Opus — because it uses more output tokens, even after Anthropic cut Fable 5.1 cache reads to US$0.25 per million. Grok 4.6, from the same independent shop, was about **US$0.84**. Different cost class.
+
+<figure>
+  <img src="/reviews/honest-review-claude-code-opus-5/cost-per-task.png" alt="Bar chart of cost per Intelligence Index task: Grok 4.6 $0.84, Opus 5 $2.34, Fable 5 $3.14, Fable 5.1 $3.76" />
+  <figcaption>Same suite. Opus 5 is the cheap Anthropic frontier model. Fable 5.1 is the expensive one. Grok is still the short bar.</figcaption>
+</figure>
+
+So: **versus Fable 5 / 5.1 — and versus Mythos 5 at the same Fable sticker — Opus 5 is the value pick.** Half the list rate. Lower cost per independent task. Anthropic’s own docs tell you to start on Opus 5 and only move to Fable when Opus at higher effort still falls short. That rule matches the numbers.
+
+Versus Grok, the story flips. Opus thinks more, spends more, and takes more turns. In [Artificial Analysis’s Astra write-up](https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra), GPT-6 Astra in Codex used about **one fifth** the tokens of Opus 5 at xhigh in the coding-agent harness. That is the lab version of me sitting there waiting for Claude Code to finish thinking.
+
+Fable 5.1 can still be cheaper **per turn** on huge, prefix-heavy agent loops because cache reads are cheaper than Opus. If your job is a long-running research agent with the same giant context hitting cache, do the maths. For a Python framework build, I was paying for **output thinking**, not cache theatre. Opus was the more honest bill.
+
+### Coding Agent Index — the chart that matches Claude Code
+
+The Intelligence Index is a generalist. The [Coding Agent Index](https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra) is closer to “what happens when this model is the agent in its native CLI.”
+
+<figure>
+  <img src="/reviews/honest-review-claude-code-opus-5/coding-agent-index.png" alt="Bar chart of Coding Agent Index: Fable 5.1 in Claude Code at 70, Opus 5 and Fable 5 around 67, GPT-6 Astra in Codex at 67" />
+  <figcaption>Fable 5.1 in Claude Code leads at 70. Opus 5 in Claude Code sits with Fable 5 and GPT-6 Astra in Codex around 67.</figcaption>
+</figure>
+
+| Model and harness | Coding Agent Index |
+| --- | ---: |
+| Claude Fable 5.1 in Claude Code | **70** |
+| Claude Opus 5 in Claude Code | **~67** |
+| Claude Fable 5 in Claude Code | **~67** |
+| GPT-6 Astra in Codex | **67** |
+
+On CursorBench 3.2, which is the in-editor cousin of this, Anthropic says Opus 5 at max is within **0.5 points** of Fable 5’s peak, at about half the cost per task. Public compilations put Opus Max around **70.0%**, Fable 5 Max around **70.5%**, Grok Extra High at **70.8%**. The scores sit on top of each other. The bill does not.
+
+### Software-engineering evals, with the ugly rows included
+
+Opus 5 is strong on repository work. It is not automatically first on every row.
+
+| Benchmark | What it is measuring | Opus 5 | Fable 5 | Fable 5.1 | GPT-5.6 Sol | GPT-6 Astra |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| SWE-bench Verified | Established issue-resolution set | **96.0%** | 95.0% | — | — | — |
+| SWE-bench Pro | Harder real-repo issues | 79.2% | **80.0%** | — | 64.6% | — |
+| DeepSWE v1.1 | Long-horizon SWE | ~68.8% (card) / higher in some harnesses | ~70% | 67.4% (OpenAI table) | ~73% | **74.1%** |
+| CursorBench 3.2 | In-editor coding agent | 70.0% | 70.5% | 73.4% (widely cited) | 67.2% | — |
+| Terminal-Bench 4.0 | Harder terminal suite | 52.3% | — | 55.8% | — | **57.7%** |
+
+Two warnings so this table does not become a meme:
+
+1. **Vendor tables and independent harnesses disagree.** DeepSWE is a good example. OpenAI’s Astra launch table is not the same run as Anthropic’s card. Use the direction, not the third decimal.
+2. **Fable still wins some of the nastiest repo rows.** If your days are migrations across a monster monolith, Fable 5.1 is the name the evals keep returning. If your days are a framework you can hold in your head, Opus 5 at half the token price is closer to the truth.
+
+Opus 5’s public shape is: **near-Fable, near-Mythos intelligence at a fraction of that class’s list price, slower in the Claude Code loop than Grok or Codex, and still the default Anthropic wants you to start with.**
+
+## Who this review is for
+
+This one is for people who will actually sit with Claude Code — plan, prompt, wait, read the diff, run the thing.
+
+If you want fully autonomous vibe coding — one big-picture prompt, then you go make kopi and hope it ships a product you like — you will be disappointed in a specific way. The quality can still be high. The **time** is not “go kopi” time. It is “I am still at the desk, the spinner is still spinning” time.
+
+## Coding with Opus 5 on Claude Code
+
+The job was an **LLM testing framework in Python**. Not a toy script. A framework: how cases are defined, how models are called, how results are stored, how you know the suite actually ran.
+
+I used Claude Code, not Cursor, for this one. Native harness, native model. That is the fair test of the pairing people keep calling the pinnacle.
+
+<figure>
+  <img src="/reviews/honest-review-claude-code-opus-5/workflow.png" alt="Four-step diagram: plan architecture, write structured Python, run tests, show results in the session" />
+  <figcaption>The quality is in all four steps. The waiting is also in all four steps.</figcaption>
+</figure>
+
+### What it did well
+
+**Planning is the strongest part.** Opus 5 produces a clear, well-taught architecture diagram. Modules, boundaries, what talks to what. If you are the sort of person who likes to agree the shape before the files get noisy, this is the right model. I would use it to plan even if I later coded elsewhere.
+
+**The code followed the plan.** Structured Python, not a dump of functions in one file. Names made sense. The framework was something you could hand to another developer without first apologising.
+
+**It test-runs for you.** This is the part that still feels slightly magic. It does not only say the tests should pass. It runs them, then puts the result in the session, so you know the whole framework is working — or you know exactly which assertion died. That closed the loop. I did not have to guess.
+
+Compared with traditional coding, it is still miles faster. A framework that would have eaten a week of careful evenings can land in a day. That sentence is not hype. It is the reason Claude Code became the standard in a lot of developers’ heads to begin with.
+
+### What grated
+
+**It is slow.** Some of that is Claude Code. Some of that is Opus 5 liking to reason. Compared with Grok 4.6 in Cursor, or ChatGPT Codex, you wait. You wait while it thinks. You wait while it tool-calls. You wait while it thinks again. I sat at the desk praying for it to finish. I went to the toilet. I made kopi. I came back. Still thinking.
+
+That thinking is not always wasted. Sometimes the architecture is better *because* it sat there. Sometimes it is just expensive silence. You cannot tell which one you are in until it speaks.
+
+**It is also not perfect.** Sometimes it interprets the intention wrongly — a constraint you thought was obvious, a test you wanted to be a unit test that becomes an integration test, a folder it decides is “cleaner” than the one you named. Then you spend more time re-prompting. The second prompt is the real cost, because you already paid the first wait.
+
+Quiet, well-structured code hides mistakes the same way Grok does. You still have to read the diff. You still have to run the product. A passing test suite is not the same as a framework you trust.
+
+## Trade-offs I would not hide
+
+- **Time versus quality.** If quality is the utmost important thing and the clock is not, Claude Code with Opus 5 is the pairing. If you need a tight loop, Grok and Codex will feel kinder.
+- **Fable 5.1 exists, and it leads some charts.** Mythos 5 sits in that same price class, with limited access. Both cost more. On Claude Pro, Fable is often the extra-cost model; Mythos is usually not on the menu at all. Opus 5 is still the strongest model many subscriptions actually include — Mythos-class behaviour, fraction of the cost.
+- **Fast mode is there.** Double the token price for speed. I did not use it for this review. If the waiting is killing you, that is the lever — not a different personality, a more expensive one.
+- **This is a Claude Code review.** Cursor with Opus, or API with your own harness, will feel different. People who say “just use Cursor” are describing a different bill and a different wait. They can be right about *their* setup without being right about this one.
+
+## Conclusion
+
+If time is not a concern, and quality is the thing you refuse to compromise, **Claude Code with Opus 5 is still the right choice.** The architecture is taught, the Python is structured, the tests actually run, and the public scores put it inside the frontier cluster — Mythos-class work, at a fraction of Mythos-class money.
+
+The competition is no longer a joke. Codex with GPT-6 Astra, Grok in Cursor, Cursor’s own models — they all can give you very good coding. Some of them will give it to you *faster*, and some of them will give it to you cheaper per task. I am not sure Claude Code’s advantage can last forever just on reputation.
+
+For now, yes, it still holds. In the heart of most developers I talk to, Claude Code is still the standard. Opus 5 is the model that makes that standard feel current instead of nostalgic.
+
+Always check the work yourself. A framework that prints a green test run is not finished until you have used it like a sceptic.
+
+If you want the other side of this comparison — same season, Cursor Pro, Grok as the default — I wrote that up separately: [Honest review of Grok 4.6](https://www.kaelnotes.com/reviews/honest-review-grok-4-6).
