@@ -1,13 +1,15 @@
-import type { Metadata } from "next";
 import { AuthorAvatar } from "@/components/AuthorAvatar";
 import { PageIntro } from "@/components/PageIntro";
+import { pageMetadata } from "@/lib/seo";
 import { author } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About",
   description:
     "Kael Morgan, a writer based in Singapore, on Kael Notes and the habit of looking closely.",
-};
+  path: "/about",
+  image: author.image,
+});
 
 export default function AboutPage() {
   return (

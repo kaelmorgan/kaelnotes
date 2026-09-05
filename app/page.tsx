@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { ReviewCard } from "@/components/ReviewCard";
 import { getLatestReviews } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
+import { siteDescription, siteName } from "@/lib/site";
 import { attachStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = pageMetadata({
+  title: siteName,
+  description: siteDescription,
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default async function Home() {
   const reviews = await attachStats(getLatestReviews(9));

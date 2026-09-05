@@ -7,6 +7,8 @@ export const siteName = "Kael Notes";
 export const siteDescription =
   "Neutral, professional reviews and considered notes on everyday subjects, by Kael Morgan.";
 
+export const defaultSocialImage = "/logo.png";
+
 export const author = {
   name: "Kael Morgan",
   role: "Writer",

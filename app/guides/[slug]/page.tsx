@@ -9,7 +9,14 @@ import { ShareButton } from "@/components/ShareButton";
 import { ViewCount } from "@/components/ViewCount";
 import { getComments } from "@/lib/comments";
 import { formatDate, getAllGuides, getGuideBySlug } from "@/lib/content";
-import { author, guideUrl, pageUrl } from "@/lib/site";
+import {
+  articleJsonLd,
+  breadcrumbJsonLd,
+  faqJsonLd,
+  jsonLdScript,
+  storyMetadata,
+} from "@/lib/seo";
+import { guideUrl } from "@/lib/site";
 import { getStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
@@ -29,38 +36,7 @@ export async function generateMetadata({
     return { title: "Guide" };
   }
 
-  const title = guide.seoTitle ?? guide.title;
-  const description = guide.seoDescription ?? guide.excerpt;
-  const url = guideUrl(guide.slug);
-
-  return {
-    title,
-    description,
-    keywords: guide.tags,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      url,
-      siteName: "Kael Notes",
-      publishedTime: guide.publishedAt.toISOString(),
-      modifiedTime: (guide.updatedAt ?? guide.publishedAt).toISOString(),
-      images: guide.coverImage ? [{ url: guide.coverImage }] : undefined,
-      authors: [author.name],
-    },
-    twitter: {
-      card: guide.coverImage ? "summary_large_image" : "summary",
-      title,
-      description,
-      images: guide.coverImage ? [guide.coverImage] : undefined,
-    },
-    authors: [{ name: author.name, url: pageUrl(author.url) }],
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return storyMetadata(guide, guideUrl(guide.slug), { keywords: true });
 }
 
 export default async function GuidePage({
@@ -81,85 +57,18 @@ export default async function GuidePage({
   ]);
 
   const url = guideUrl(guide.slug);
-  const headline = guide.seoTitle ?? guide.title;
-  const description = guide.seoDescription ?? guide.excerpt;
-
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline,
-    name: guide.title,
-    description,
-    url,
-    mainEntityOfPage: url,
-    datePublished: guide.publishedAt.toISOString(),
-    dateModified: (guide.updatedAt ?? guide.publishedAt).toISOString(),
-    inLanguage: "en-SG",
-    author: {
-      "@type": "Person",
-      name: author.name,
-      url: pageUrl(author.url),
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Kael Notes",
-      url: pageUrl("/"),
-      logo: {
-        "@type": "ImageObject",
-        url: pageUrl("/logo.png"),
-      },
-    },
-    keywords: guide.tags.join(", "),
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: pageUrl("/"),
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Guides",
-        item: pageUrl("/guides"),
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: guide.title,
-        item: url,
-      },
-    ],
-  };
-
-  const faqJsonLd =
-    guide.faqs.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: guide.faqs.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: item.answer,
-            },
-          })),
-        }
-      : null;
 
   return (
     <article className="mx-auto w-full max-w-[680px] px-5 py-12 sm:px-0 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            [articleJsonLd, breadcrumbJsonLd, faqJsonLd].filter(Boolean),
+          __html: jsonLdScript(
+            [
+              articleJsonLd(guide, url),
+              breadcrumbJsonLd("guide", guide, url),
+              faqJsonLd(guide),
+            ].filter(Boolean),
           ),
         }}
       />

@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "FAQ",
   description: "What Kael Notes is, what gets reviewed, and how the work is approached.",
-};
+  path: "/faq",
+});
 
 const faqs = [
   {

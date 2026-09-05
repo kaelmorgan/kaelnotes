@@ -11,8 +11,8 @@ export type Review = {
   category: string;
   tags: string[];
   coverImage?: string;
-  seoTitle?: string;
-  seoDescription?: string;
+  seoTitle: string;
+  seoDescription: string;
   viewCount: number;
   likeCount: number;
   publishedAt: Date;

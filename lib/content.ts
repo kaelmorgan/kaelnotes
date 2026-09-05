@@ -13,14 +13,27 @@ type ReviewFrontmatter = {
   category: string;
   tags?: string[];
   coverImage?: string;
-  seoTitle?: string;
-  seoDescription?: string;
+  seoTitle: string;
+  seoDescription: string;
   viewCount?: number;
   likeCount?: number;
   publishedAt: string;
   updatedAt?: string;
   faqs?: FaqItem[];
 };
+
+function requiredFrontmatterString(
+  value: unknown,
+  field: string,
+  filename: string,
+): string {
+  if (typeof value !== "string" || !value.trim()) {
+    throw new Error(
+      `${filename} is missing required frontmatter "${field}". Every story needs seoTitle and seoDescription.`,
+    );
+  }
+  return value.trim();
+}
 
 function parseMdxArticle(directory: string, filename: string): {
   article: Review;
@@ -30,6 +43,16 @@ function parseMdxArticle(directory: string, filename: string): {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
   const frontmatter = data as ReviewFrontmatter;
+  const seoTitle = requiredFrontmatterString(
+    frontmatter.seoTitle,
+    "seoTitle",
+    filename,
+  );
+  const seoDescription = requiredFrontmatterString(
+    frontmatter.seoDescription,
+    "seoDescription",
+    filename,
+  );
 
   return {
     article: {
@@ -40,8 +63,8 @@ function parseMdxArticle(directory: string, filename: string): {
       category: frontmatter.category,
       tags: frontmatter.tags ?? [],
       coverImage: frontmatter.coverImage,
-      seoTitle: frontmatter.seoTitle,
-      seoDescription: frontmatter.seoDescription,
+      seoTitle,
+      seoDescription,
       viewCount: frontmatter.viewCount ?? 0,
       likeCount: frontmatter.likeCount ?? 0,
       publishedAt: new Date(frontmatter.publishedAt),

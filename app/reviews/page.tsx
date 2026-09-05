@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Pagination } from "@/components/Pagination";
 import { PageIntro } from "@/components/PageIntro";
 import { ReviewCard } from "@/components/ReviewCard";
@@ -9,14 +8,16 @@ import {
   getReviewSummaries,
   type ReviewSort,
 } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { attachStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Reviews",
   description: "All reviews published on Kael Notes, with filters by category.",
-};
+  path: "/reviews",
+});
 
 const pageSizes = [6, 9, 12, 24];
 

@@ -1,0 +1,32 @@
+---
+description: Required SEO and social metadata for every review and guide
+globs: content/**/*.mdx
+alwaysApply: false
+---
+
+# Story SEO frontmatter
+
+Every review in `content/reviews/` and guide in `content/guides/` must include these fields. The site will not build without `seoTitle` and `seoDescription`.
+
+```yaml
+title: "On-page H1, written for readers"
+slug: url-safe-kebab-case
+excerpt: "Lead paragraph shown on the page and cards."
+category: Software
+tags:
+  - example-tag
+coverImage: /reviews/slug/cover.png
+seoTitle: "Search and social title, under 60 characters"
+seoDescription: "Meta description of 140–160 characters that names the subject, the conditions, and the takeaway."
+publishedAt: "2026-09-05"
+```
+
+Required for SEO, Open Graph, and X:
+
+- `seoTitle` — used for `<title>`, `og:title`, and `twitter:title`
+- `seoDescription` — used for meta description, `og:description`, and `twitter:description`
+- `coverImage` — used for `og:image` and `twitter:image` (`summary_large_image`). If omitted, the site logo is used.
+
+Canonical and `og:url` are generated from the slug. Do not invent extra meta tags in the MDX body.
+
+Write `seoTitle` and `seoDescription` as checkable claims, not slogans, so search engines and language models can cite the page accurately.

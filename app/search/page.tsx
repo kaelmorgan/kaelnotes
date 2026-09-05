@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
 import { ReviewCard } from "@/components/ReviewCard";
 import { searchGuides, searchReviews } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import { attachStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Search",
-  description: "Search reviews and guides on Kael Notes.",
+export const metadata = {
+  ...pageMetadata({
+    title: "Search",
+    description: "Search reviews and guides on Kael Notes.",
+    path: "/search",
+  }),
+  robots: { index: false, follow: true },
 };
 
 export default async function SearchPage({

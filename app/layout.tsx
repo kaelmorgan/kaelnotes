@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { author, siteUrl } from "@/lib/site";
+import { author, defaultSocialImage, siteDescription, siteName, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,11 +19,24 @@ const sourceSerif = Source_Serif_4({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Kael Notes",
-    template: "%s · Kael Notes",
+    default: siteName,
+    template: `%s · ${siteName}`,
   },
-  description:
-    "Neutral, professional reviews and considered notes on everyday subjects, by Kael Morgan.",
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName,
+    locale: "en_SG",
+    title: siteName,
+    description: siteDescription,
+    images: [{ url: defaultSocialImage, alt: siteName }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+    images: [defaultSocialImage],
+  },
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },

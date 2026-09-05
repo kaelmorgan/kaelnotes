@@ -1,33 +1,17 @@
-import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
 import { ReviewCard } from "@/components/ReviewCard";
 import { getGuideSummaries } from "@/lib/content";
-import { pageUrl } from "@/lib/site";
+import { pageMetadata } from "@/lib/seo";
 import { attachStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
 
-const title = "Guides";
-const description =
-  "Longer notes on how Kael Notes writes: why a neutral professional review matters, and how to read practical reviews without the hype.";
-
-export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical: pageUrl("/guides") },
-  openGraph: {
-    type: "website",
-    title,
-    description,
-    url: pageUrl("/guides"),
-    siteName: "Kael Notes",
-  },
-  twitter: {
-    card: "summary",
-    title,
-    description,
-  },
-};
+export const metadata = pageMetadata({
+  title: "Guides",
+  description:
+    "Longer notes on how Kael Notes writes: why a neutral professional review matters, and how to read practical reviews without the hype.",
+  path: "/guides",
+});
 
 export default async function GuidesPage() {
   const guides = await attachStats(getGuideSummaries());

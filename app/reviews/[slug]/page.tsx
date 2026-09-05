@@ -9,7 +9,13 @@ import { ShareButton } from "@/components/ShareButton";
 import { ViewCount } from "@/components/ViewCount";
 import { getComments } from "@/lib/comments";
 import { formatDate, getAllReviews, getReviewBySlug } from "@/lib/content";
-import { author, pageUrl, reviewUrl } from "@/lib/site";
+import {
+  articleJsonLd,
+  breadcrumbJsonLd,
+  jsonLdScript,
+  storyMetadata,
+} from "@/lib/seo";
+import { reviewUrl } from "@/lib/site";
 import { getStats } from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
@@ -29,33 +35,7 @@ export async function generateMetadata({
     return { title: "Review" };
   }
 
-  const title = review.seoTitle ?? review.title;
-  const description = review.seoDescription ?? review.excerpt;
-  const url = reviewUrl(review.slug);
-
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      url,
-      siteName: "Kael Notes",
-      publishedTime: review.publishedAt.toISOString(),
-      modifiedTime: (review.updatedAt ?? review.publishedAt).toISOString(),
-      images: review.coverImage ? [{ url: review.coverImage }] : undefined,
-      authors: [author.name],
-    },
-    twitter: {
-      card: review.coverImage ? "summary_large_image" : "summary",
-      title,
-      description,
-      images: review.coverImage ? [review.coverImage] : undefined,
-    },
-    authors: [{ name: author.name, url: pageUrl(author.url) }],
-  };
+  return storyMetadata(review, reviewUrl(review.slug), { keywords: true });
 }
 
 export default async function ReviewPage({
@@ -75,8 +55,19 @@ export default async function ReviewPage({
     getComments(review.slug),
   ]);
 
+  const url = reviewUrl(review.slug);
+
   return (
     <article className="mx-auto w-full max-w-[680px] px-5 py-12 sm:px-0 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            articleJsonLd(review, url),
+            breadcrumbJsonLd("review", review, url),
+          ]),
+        }}
+      />
       <p className="font-sans text-xs tracking-[0.16em] text-accent uppercase">
         {review.category}
       </p>

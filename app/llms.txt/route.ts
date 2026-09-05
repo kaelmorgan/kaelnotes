@@ -30,14 +30,14 @@ export function GET() {
     "",
     ...reviews.map(
       (review) =>
-        `- [${review.title}](${reviewUrl(review.slug)}): ${review.excerpt}`,
+        `- [${review.seoTitle}](${reviewUrl(review.slug)}): ${review.seoDescription}`,
     ),
     "",
     "## Guides",
     "",
     ...guides.map(
       (guide) =>
-        `- [${guide.title}](${guideUrl(guide.slug)}): ${guide.excerpt}`,
+        `- [${guide.seoTitle}](${guideUrl(guide.slug)}): ${guide.seoDescription}`,
     ),
     "",
     "## Machine-readable",
