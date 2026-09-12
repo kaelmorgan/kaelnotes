@@ -3,7 +3,14 @@ import type { ReactNode } from "react";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { author, defaultSocialImage, siteDescription, siteName, siteUrl } from "@/lib/site";
+import {
+  author,
+  defaultSocialImage,
+  ogLocale,
+  siteDescription,
+  siteName,
+  siteUrl,
+} from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName,
-    locale: "en_SG",
+    locale: ogLocale,
     title: siteName,
     description: siteDescription,
     images: [{ url: defaultSocialImage, alt: siteName }],

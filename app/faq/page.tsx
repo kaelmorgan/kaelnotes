@@ -31,7 +31,7 @@ const faqs = [
   {
     question: "Why publish guides as well as reviews?",
     answer:
-      "Reviews are close readings of a particular experience. Guides explain the standard behind them — starting with why a neutral, professional review matters.",
+      "Reviews are close readings of a particular experience. Guides explain the standard behind them — why a neutral, professional review matters, and why a Kael Notes review is worth taking seriously.",
   },
 ];
 

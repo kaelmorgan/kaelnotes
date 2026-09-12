@@ -1,6 +1,22 @@
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://kaelnotes.com"
-).replace(/\/$/, "");
+function resolveSiteUrl() {
+  const raw = (
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.kaelnotes.com"
+  ).replace(/\/$/, "");
+
+  try {
+    const url = new URL(raw);
+    if (url.hostname === "kaelnotes.com") {
+      url.hostname = "www.kaelnotes.com";
+    }
+    return url.origin;
+  } catch {
+    return "https://www.kaelnotes.com";
+  }
+}
+
+export const siteUrl = resolveSiteUrl();
+
+export const ogLocale = "en_GB";
 
 export const siteName = "Kael Notes";
 

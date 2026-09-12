@@ -3,6 +3,7 @@ import {
   absoluteAssetUrl,
   author,
   defaultSocialImage,
+  ogLocale,
   pageUrl,
   siteName,
 } from "./site";
@@ -10,8 +11,24 @@ import type { Review } from "./types";
 
 type StoryKind = "review" | "guide";
 
+function socialImageType(path: string) {
+  if (path.endsWith(".png")) return "image/png";
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+  if (path.endsWith(".webp")) return "image/webp";
+  return undefined;
+}
+
+function socialImage(path?: string, alt?: string) {
+  const relative = path || defaultSocialImage;
+  return {
+    url: absoluteAssetUrl(relative),
+    alt,
+    type: socialImageType(relative),
+  };
+}
+
 function socialImageUrl(path?: string) {
-  return absoluteAssetUrl(path || defaultSocialImage);
+  return socialImage(path).url;
 }
 
 export function storyMetadata(
@@ -21,7 +38,7 @@ export function storyMetadata(
 ): Metadata {
   const title = story.seoTitle ?? story.title;
   const description = story.seoDescription ?? story.excerpt;
-  const image = socialImageUrl(story.coverImage);
+  const image = socialImage(story.coverImage, title);
 
   return {
     title,
@@ -36,17 +53,17 @@ export function storyMetadata(
       description,
       url,
       siteName,
-      locale: "en_SG",
+      locale: ogLocale,
       publishedTime: story.publishedAt.toISOString(),
       modifiedTime: (story.updatedAt ?? story.publishedAt).toISOString(),
-      images: [{ url: image, alt: title }],
+      images: [image],
       authors: [author.name],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [image],
+      images: [image.url],
     },
     authors: [{ name: author.name, url: pageUrl(author.url) }],
     robots: {
@@ -70,7 +87,7 @@ export function pageMetadata({
   absoluteTitle?: boolean;
 }): Metadata {
   const url = pageUrl(path);
-  const socialImage = socialImageUrl(image);
+  const imageMeta = socialImage(image, title);
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -82,14 +99,14 @@ export function pageMetadata({
       description,
       url,
       siteName,
-      locale: "en_SG",
-      images: [{ url: socialImage, alt: title }],
+      locale: ogLocale,
+      images: [imageMeta],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [socialImage],
+      images: [imageMeta.url],
     },
   };
 }
