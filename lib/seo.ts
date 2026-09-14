@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import type { Metadata } from "next";
 import {
   absoluteAssetUrl,
@@ -18,12 +20,34 @@ function socialImageType(path: string) {
   return undefined;
 }
 
-function socialImage(path?: string, alt?: string) {
-  const relative = path || defaultSocialImage;
+function pngDimensions(relativePath: string) {
+  const file = path.join(
+    process.cwd(),
+    "public",
+    relativePath.replace(/^\//, ""),
+  );
+  if (!file.endsWith(".png") || !fs.existsSync(file)) {
+    return {};
+  }
+
+  const buf = fs.readFileSync(file);
+  if (buf.length < 24 || buf.toString("ascii", 1, 4) !== "PNG") {
+    return {};
+  }
+
+  return {
+    width: buf.readUInt32BE(16),
+    height: buf.readUInt32BE(20),
+  };
+}
+
+function socialImage(imagePath?: string, alt?: string) {
+  const relative = imagePath || defaultSocialImage;
   return {
     url: absoluteAssetUrl(relative),
     alt,
     type: socialImageType(relative),
+    ...pngDimensions(relative),
   };
 }
 
@@ -63,7 +87,7 @@ export function storyMetadata(
       card: "summary_large_image",
       title,
       description,
-      images: [image.url],
+      images: [image],
     },
     authors: [{ name: author.name, url: pageUrl(author.url) }],
     robots: {
@@ -106,7 +130,7 @@ export function pageMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [imageMeta.url],
+      images: [imageMeta],
     },
   };
 }

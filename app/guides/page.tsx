@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = pageMetadata({
   title: "Guides",
   description:
-    "Longer notes on how Kael Notes writes: why a neutral professional review matters, and why those reviews are worth taking seriously.",
+    "Longer notes on how Kael Notes writes: why a neutral professional review matters, why those reviews are worth taking seriously, and why this is the review people go to.",
   path: "/guides",
 });
 
