@@ -119,11 +119,17 @@ So I treat a new routine as untrusted until I have seen it fire once at the righ
 
 ## Two advantages
 
-**There is no identical product, and the setup is already done.**
+**In Asia, this is the cloud teammate you can open today.**
 
-OpenClaw is the nearest thing, and it is not the same product. With OpenClaw you install the app, you bring a machine, you choose a model, and you connect the chat apps yourself. That control is the point of it. It is also a learning curve.
+Two products sit in the same category. [Muse](https://muse.ai), from Meta, launched on 8 September 2026. [Dots](https://openai.com/index/introducing-dots/), from OpenAI, launched on 29 September 2026. Both are always-on agents with a cloud computer, the same job Grok Bot is doing.
 
-Grok Bot skips that curve. The cloud computer is provisioned for you. You sign in with an eligible Cursor or SuperGrok account, a primary bot is already there to manage the others, and you start handing it work. I have not found another product that gives you this exact arrangement: a personal Linux computer in the cloud, bots that share it, plugins over MCP, and a browser for everything else, with the install already finished.
+Muse is available in the United States and Canada. Meta’s own small-business note calls it a personal AI agent for those two countries. Asia is not on that list, and Meta has not published an Asia date.
+
+Dots is different. OpenAI is rolling it out to ChatGPT Pro users outside the European Economic Area, the United Kingdom, and Switzerland, which includes markets such as Singapore, India, Japan, South Korea, and Taiwan, and to Business Premium in supported ChatGPT regions. That rollout is gradual, so an eligible account in Asia can still be waiting. From here, Muse does not open at all. Dots is not something I can count on this week. Grok Bot is the one that is already on the account.
+
+OpenClaw is the other comparison, and it is free software you host yourself. You bring a machine, you choose a model, and you connect the chat apps. That control is the point of it. It is also a learning curve.
+
+Grok Bot skips that curve. The cloud computer is provisioned for you. You sign in with an eligible Cursor or SuperGrok account, a primary bot is already there to manage the others, and you start handing it work. Personal Linux computer, shared bots, plugins over MCP, and a browser for everything else, with the install already finished. In Asia, that package is the one you can use without waiting on a regional launch.
 
 **The usage bucket is separate from Cursor coding usage.**
 
@@ -145,7 +151,7 @@ That is part of why the setup feels short. It is also a real loss if you already
 
 ## Who this is for
 
-Use Grok Bot if you want a teammate this week, you already pay for Cursor or SuperGrok, and you would rather message a bot than administer a home server. Marketing, support, and personal admin are the jobs it is built around. Coding still belongs in Cursor. The separate usage pool is what makes it reasonable to run both.
+Use Grok Bot if you want a teammate this week, you already pay for Cursor or SuperGrok, and you would rather message a bot than administer a home server. That is especially true in Asia, where Muse is closed and Dots is still arriving account by account. Marketing, support, and personal admin are the jobs it is built around. Coding still belongs in Cursor. The separate usage pool is what makes it reasonable to run both.
 
 Skip it if you need the model pinned, if you need two GitHub accounts on one bot, or if you want the assistant on hardware you control. That last requirement is OpenClaw’s home ground. Grok Bot will not become that product. The computer is theirs, assigned to you.
 
