@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Terminal-Bench 4.0 scores for the Claude 5.5 family and named rivals</title>
+  <desc id="desc">Sonnet 5.5 70.6 percent, Opus 5.5 66.4 percent, GPT-6 Astra 57.9 percent, Fable 5.1 55.8 percent, Opus 5 52.3 percent, Haiku 5.5 39.2 percent, GPT-5.6 Sol 37.3 percent, Sonnet 5 10.3 percent.</desc>
+  <rect width="1200" height="630" fill="#f7f4ee"/>
+  <text x="56" y="52" fill="#1c1917" font-family="Georgia, serif" font-size="32">Terminal-Bench 4.0</text>
+  <text x="56" y="82" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Agentic coding. Higher is better. Published figures, October 2026.</text>
+
+  <line x1="250" y1="108" x2="250" y2="548" stroke="#e7e1d6" stroke-width="1"/>
+  <line x1="250" y1="548" x2="1110" y2="548" stroke="#e7e1d6" stroke-width="1"/>
+
+  <g stroke="#e7e1d6" stroke-dasharray="3 5">
+    <line x1="465" y1="108" x2="465" y2="548"/>
+    <line x1="680" y1="108" x2="680" y2="548"/>
+    <line x1="895" y1="108" x2="895" y2="548"/>
+    <line x1="1110" y1="108" x2="1110" y2="548"/>
+  </g>
+  <g fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">
+    <text x="250" y="568" text-anchor="middle">0</text>
+    <text x="465" y="568" text-anchor="middle">20</text>
+    <text x="680" y="568" text-anchor="middle">40</text>
+    <text x="895" y="568" text-anchor="middle">60</text>
+    <text x="1110" y="568" text-anchor="middle">80%</text>
+  </g>
+
+  <rect x="250" y="118" width="759" height="40" fill="#1f3344"/>
+  <text x="40" y="144" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Sonnet 5.5</text>
+  <text x="1017" y="144" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">70.6%</text>
+
+  <rect x="250" y="170" width="714" height="40" fill="#31475a"/>
+  <text x="40" y="196" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Opus 5.5 (xhigh)</text>
+  <text x="972" y="196" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">66.4%</text>
+
+  <rect x="250" y="222" width="622" height="40" fill="#8c7a66"/>
+  <text x="40" y="248" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">GPT-6 Astra (high)</text>
+  <text x="880" y="248" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">57.9%</text>
+
+  <rect x="250" y="274" width="600" height="40" fill="#4d6478"/>
+  <text x="40" y="300" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Fable 5.1</text>
+  <text x="858" y="300" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">55.8%</text>
+
+  <rect x="250" y="326" width="562" height="40" fill="#5c6e80"/>
+  <text x="40" y="352" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Opus 5</text>
+  <text x="820" y="352" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">52.3%</text>
+
+  <rect x="250" y="378" width="421" height="40" fill="#6d8494"/>
+  <text x="40" y="404" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Haiku 5.5</text>
+  <text x="679" y="404" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">39.2%</text>
+
+  <rect x="250" y="430" width="401" height="40" fill="#6b5c4c"/>
+  <text x="40" y="456" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">GPT-5.6 Sol</text>
+  <text x="659" y="456" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">37.3%</text>
+
+  <rect x="250" y="482" width="111" height="40" fill="#c4b8a8"/>
+  <text x="40" y="508" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">Sonnet 5</text>
+  <text x="369" y="508" fill="#1c1917" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">10.3%</text>
+
+  <text x="56" y="608" fill="#57534e" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Anthropic's published scores. Astra and GPT-5.6 Sol are OpenAI's figures, as Anthropic cites them. Effort settings differ.</text>
+</svg>

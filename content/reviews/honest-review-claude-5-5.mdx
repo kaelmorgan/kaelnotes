@@ -1,0 +1,169 @@
+---
+title: "Honest review of the Claude 5.5 family"
+slug: honest-review-claude-5-5
+excerpt: "A week on the US$20 Claude Code plan, with half the weekly usage still left. Opus 5.5 plans, Sonnet 5.5 executes, Haiku 5.5 writes the documents, and the public scores show where the lead is real."
+category: Software
+tags:
+  - claude-opus-5-5
+  - claude-sonnet-5-5
+  - claude-haiku-5-5
+  - claude-code
+  - anthropic
+  - gpt-6-astra
+  - gpt-6-1-sol
+  - grok-4-7
+coverImage: /reviews/honest-review-claude-5-5/terminal-bench.png
+seoTitle: "Honest review of Claude Opus, Sonnet, and Haiku 5.5"
+seoDescription: "One week on the US$20 Claude Code plan, with half the weekly usage left. How Opus, Sonnet, and Haiku 5.5 split the work, and where the public scores lead."
+publishedAt: "2026-10-09"
+---
+
+I spent this past week in Claude Code on the US$20 plan. At the end of it, about half the weekly usage was still there. A year ago that sentence would have meant I barely opened the app. It does not mean that now.
+
+This is a review of the Claude 5.5 family as a working set: **Opus 5.5**, **Sonnet 5.5**, and **Haiku 5.5**. The public scores are strong. One of them is startling. None of them is a reason to stop reading the diff.
+
+I am writing this on 9 October 2026. Leaderboards move. Effort settings change the number. Treat the tables as a snapshot, then weigh them against the meter on your own plan.
+
+## The week on US$20
+
+Anthropic spent a long time as the lab you rationed. People wanted Claude for agentic coding, and the plan was the thing that ran out. That reputation was earned.
+
+The 5.5 generation is the correction.
+
+Opus 5.5 arrived on 22 September at **US$4 / US$20** per million input and output tokens, down from US$5 / US$25 on Opus 5, with cache reads cut to US$0.20. Sonnet 5.5 arrived on 28 September at **US$2 / US$10**. On 7 October, Anthropic halved Sonnet's cache reads to **US$0.10**. Haiku 5.5 arrived the same day: **US$0.10 / US$0.50** per million tokens on prompts up to 100,000 tokens, and **US$0.50 / US$2.50** above that. Anthropic says about 90% of previous Haiku requests sat under that 100,000-token line, and that Haiku 5.5 costs around 75% less to run than Haiku 4.5.
+
+On the US$20 plan, the change I can feel is simpler than the price card. I worked for a week. I still had about 50% of the weekly usage left. That is breathing room. It is room to keep doing quality work, not a blank cheque.
+
+ChatGPT and Grok still stretch a subscription further. If your week is a long chain of short, cheap turns, those two still feel kinder to the meter. I would not call Anthropic the most efficient provider in the room. What changed is the part that used to hurt. Claude Code can now carry serious agentic coding through the week and still leave you something on Friday.
+
+## Three jobs, three models
+
+Haiku 5.5 is what makes a split practical. It is the cheapest and fastest Claude Anthropic has shipped. It is built for the work that used to feel too small to spend Opus on: summaries, compaction, classification, and the documents a repo needs before anyone writes code. Anthropic also describes it as a subagent beside the larger models.
+
+This is how I would run the plan now that all three are out.
+
+**Haiku writes the documents.** A `CLAUDE.md`, a short architecture note, a summary of what the last session actually changed. It is fast enough, and cheap enough, that you stop hoarding those files.
+
+**Opus plans.** Opus 5.5 is the model I trust with the shape: modules, boundaries, what should not be touched. Anthropic still positions it for long, open-ended work that needs judgment. On the public composite, it is also the one in front.
+
+**Sonnet executes.** Sonnet 5.5 is the daily coder. It is fast, it is half the Opus token price, and on several coding evals it sits next to Opus. On one famous row it sits ahead. Bug fixes, the implementation that follows a plan, the polish pass: that is its job.
+
+If the meter is healthy, or the task is the one you cannot afford to get vaguely right, use Opus as the executor too. The split is a way to spend a finite week. It is not a law. Extra usage is permission to stop being clever and let the planner write the code as well.
+
+Anthropic's Haiku launch page says the same thing in lab language. Sonnet 5.5 and Opus 5.5 remain the better choice for complex agentic coding, the kind of work Terminal-Bench measures. Haiku is for the narrower jobs that used to be too expensive to run all day.
+
+## The scores, with the rows they do not win
+
+Two sources, because they do not agree to the decimal, and pretending they do is how a review becomes an ad.
+
+### Intelligence Index
+
+[Artificial Analysis](https://artificialanalysis.ai/models/releases/claude-opus-5-5) folds ten evaluations into one Intelligence Index: agents, coding, knowledge work, science, and long context. On their model pages, Opus 5.5 at max with the default fallback displays **58**, and Sonnet 5.5 at the same setting displays **56**. A capture of that board on 9 October 2026 lists the underlying figures as **57.6** and **56.0**. The table below uses that one-decimal capture, so every rival is on the same scale. Each row is the setting that capture treats as the model's published top.
+
+| Model (published top setting) | Intelligence Index |
+| --- | ---: |
+| Claude Opus 5.5 (max, fallback) | **57.6** |
+| Claude Sonnet 5.5 (max, fallback) | **56.0** |
+| Claude Fable 5.1 (max, fallback) | 53.4 |
+| GPT-6 Astra (max) | 52.7 |
+| Gemini 4 Argon (high) | 52.6 |
+| GPT-6.1 Sol (max) | 51.8 |
+| Grok 4.7 (xhigh) | 46.4 |
+| MiMo-V2.6-Pro (Xiaomi) | 46.3 |
+| Qwen3.8 Max (0902, Alibaba) | 45.4 |
+| GLM-5.3 (max, Z.ai) | 44.8 |
+| Kimi K3 (max, Moonshot) | 43.6 |
+| Claude Haiku 5.5 (max) | 43.4 |
+| DeepSeek V4.1 Flash (max) | 39.5 |
+
+Read it in two layers.
+
+The top of the board is a real lead, and it is a few points. Opus 5.5 is first. Sonnet 5.5 is second, ahead of Fable 5.1, GPT-6 Astra, Gemini 4 Argon, and the GPT-6.1 Sol that OpenAI introduced at DevDay the day after Sonnet shipped. Anyone who says the 5.5 models left the rest of the frontier behind on this composite is rounding a story, not a score.
+
+The second layer is the gap people mean when they talk about US models and Chinese models. On this snapshot the strongest Chinese systems, Xiaomi's MiMo-V2.6-Pro, Alibaba's Qwen3.8 Max, Z.ai's GLM-5.3, and Moonshot's Kimi K3, sit between 43.6 and 46.3. Opus 5.5 is about twelve points above that cluster. Sonnet 5.5 is about ten above it. Haiku 5.5, the small model, lands at 43.4, beside Kimi K3 and ahead of DeepSeek V4.1 Flash at 39.5. The whole US field did not move as one. Anthropic's two larger 5.5 models did, and they opened daylight that was not there when Fable 5.1 and Astra were tied in the low 50s a month earlier.
+
+Grok 4.7 at xhigh is in that same mid-40s band, at 46.4. That does not cancel the efficiency point above. A model can sit lower on this index and still give you more turns per dollar. Score and stamina are different charts.
+
+### Terminal-Bench 4.0, the row that looks absurd
+
+This is the chart people screenshot. On [Anthropic's Sonnet 5.5 post](https://www.anthropic.com/claude-sonnet-5-5), Sonnet 5.5 scores **70.6%** on Terminal-Bench 4.0. Sonnet 5, the previous generation, scores **10.3%**. Same family. Sixty points. That jump is the mind-blowing number. I do not have a softer description for a model going from barely on the board to ahead of the current Opus.
+
+<figure>
+  <img src="/reviews/honest-review-claude-5-5/terminal-bench.png" alt="Bar chart of Terminal-Bench 4.0: Sonnet 5.5 at 70.6 percent, Opus 5.5 at 66.4 percent, GPT-6 Astra at 57.9 percent, Fable 5.1 at 55.8 percent, Opus 5 at 52.3 percent, Haiku 5.5 at 39.2 percent, GPT-5.6 Sol at 37.3 percent, and Sonnet 5 at 10.3 percent" />
+  <figcaption>Anthropic's published Terminal-Bench 4.0 figures. Opus 5.5 is at xhigh. Astra and GPT-5.6 Sol are OpenAI's numbers, as Anthropic cites them. Effort settings are not matched.</figcaption>
+</figure>
+
+| Model | Terminal-Bench 4.0 | Who published it |
+| --- | ---: | --- |
+| Claude Sonnet 5.5 | **70.6%** | Anthropic |
+| Claude Opus 5.5 (xhigh) | **66.4%** | Anthropic |
+| GPT-6 Astra (high) | 57.9% | OpenAI, as cited by Anthropic |
+| Claude Fable 5.1 | 55.8% | Anthropic |
+| Claude Opus 5 | 52.3% | Anthropic |
+| Claude Haiku 5.5 | 39.2% | Anthropic |
+| GPT-5.6 Sol | 37.3% | OpenAI, as cited by Anthropic |
+| GPT-6 Luna | 16.4% | Anthropic, on the Haiku page |
+| Claude Sonnet 5 | 10.3% | Anthropic |
+
+Two cautions, then the point.
+
+Anthropic reports Opus 5.5 on this bench at xhigh, which it calls that model's highest score, with a standard error of about ±2.6 points. Astra's 57.9% is OpenAI's figure at high effort. These are not a compute-matched fight. Artificial Analysis's own Terminal-Bench run, on the Opus and Sonnet comparison, is lower: about **64%** for Sonnet 5.5 at max and about **60%** for Opus 5.5 at max. Same direction. Not the same decimal.
+
+Sonnet beating Opus on this one row does not make Sonnet the planner. Anthropic says so in the launch post. On open-ended work that needs sustained judgment, their testers still found Opus 5.5 clearly stronger. That is also how I want to use them.
+
+### The other rows worth keeping
+
+These cells come from Anthropic's own launch posts. Where a rival's name changes between posts, I have left it as printed, instead of forcing Astra and Sol into one column.
+
+| Benchmark | Opus 5.5 | Sonnet 5.5 | Nearest named rival on that post |
+| --- | ---: | ---: | --- |
+| FrontierCode 1.1 (Main) | 54.4% | 52.1% at xhigh, 46.2% at max | GPT-6 Astra 53.3% (Opus post); GPT-6 Sol 49.3% (Sonnet post) |
+| CursorBench 4.0 | 57.8% | 55.5% | GPT-5.6 Sol 41.7% (Opus post) |
+| GDPval-AA v2.1 (Elo) | 1846 | 1844 | GPT-6 Astra 1542 (Opus post); GPT-6 Sol 1487 (Sonnet post) |
+| Humanity's Last Exam, with tools | 67.7% | 64.5% | GPT-6 Astra 57.2% (Opus post) |
+| OSWorld, partial credit | 81.8% on OSWorld 2.0 | 80.1% on OSWorld 2.1 | Different versions. Do not read these two cells as one run. |
+
+Haiku 5.5, from its own launch page, on the jobs it is actually for:
+
+| Benchmark | Haiku 5.5 | GPT-6 Luna | Sonnet 5.5, for scale |
+| --- | ---: | ---: | ---: |
+| GDPval-AA v2.1 | 1620 | 1437 | 1840 |
+| Terminal-Bench 4.0 | 39.2% | 16.4% | 70.6% |
+| FrontierCode 1.1 (Main) | 46.4% | 42.4% | 52.1% at xhigh |
+| OSWorld 2.1, offline subset | 72.4% | 48.9% | 83.9% |
+| Humanity's Last Exam, no tools | 45.9% | not reported | 56.9% |
+
+Haiku's page reprints Sonnet's GDPval score as 1840. Sonnet's own page says 1844. Four Elo points is noise between posts. The shape of the table is not. Haiku clears the small OpenAI model on the rows Anthropic chose to print, and it is still not the model you hand a migration. **39.2% against Sonnet's 70.6%** on Terminal-Bench is the product decision in one line.
+
+### Where other models still lead
+
+On Zapier's AutomationBench, Anthropic's Opus post has GPT-6 Astra at **41.4%** and Opus 5.5 at **40.0%**. Astra is ahead, by a point, on business workflows across connected apps. On Terminal-Bench-Science 0.1, Astra is at **64.6%** and Opus 5.5 at **58.7%**. Scientific agent work is not an Anthropic sweep.
+
+FrontierCode also refuses a simple ranking. Opus 5.5 at 54.4% leads Astra's 53.3% on the Opus post. Sonnet 5.5's best published cell is 52.1% at xhigh, and it falls to 46.2% at max. Anthropic's explanation is that max effort more often ran a wide code review and then edited past the task. Higher effort is not free quality.
+
+List price is the other place a rival still wins, if the rival is Grok or a Chinese flash model and the question is the sticker per million tokens. Opus at US$20 of output, and Sonnet at US$10, are not the cheap seats. Anthropic's claim is that 5.5 uses fewer tokens per finished task than the models it replaced, so the bill drops even when the sticker only drops a little. On the US$20 plan I cannot see that invoice line by line. I can see that the week did not end on empty.
+
+## The week they chose to ship it
+
+Sonnet 5.5 shipped on **28 September 2026**. OpenAI DevDay was the next day, **29 September**, in San Francisco. That part is exact. One day.
+
+The China part needs the calendar, not a slogan. The official Mid-Autumn holiday was 25 to 27 September. National Day was 1 to 7 October. The 28th was a working Monday between them. Plenty of people took 28 to 30 September off anyway, so the two holidays became one long break. Haiku 5.5 then shipped on **7 October**, the last day of the official National Day holiday.
+
+Anthropic put Sonnet on the table the day before OpenAI's stage, in the gap when many teams in China were already away, and followed with Haiku while that holiday was still running. A launch date is theatre. The muscle is the table above: a few points of lead on an independent index, a much wider gap over the leading Chinese models, and a coding eval that jumped sixty points over their own previous Sonnet.
+
+OpenAI did not spend DevDay watching. GPT-6.1 Sol arrived there. On the 9 October index it sits at 51.8. That is a serious model, and it is still behind both Opus 5.5 and Sonnet 5.5 at max. The gap to Astra is small. The gap to MiMo, Qwen, GLM, and Kimi is the one that widened.
+
+## What I would actually do on Monday
+
+Stay on the US$20 plan if agentic coding quality is the thing you refuse to drop, and you can live with a meter that is survivable rather than lavish.
+
+- Write `CLAUDE.md` and the session notes with Haiku.
+- Plan with Opus.
+- Implement with Sonnet.
+- Move the executor up to Opus when the usage bar says you can, or when the task is the one Sonnet should not be guessing at.
+
+If the week is mostly short turns and you are watching the usage bar every afternoon, ChatGPT or Grok will still feel more efficient. Anthropic closed the constraint that used to make Claude Code a luxury you rationed. They did not become the lab that never makes you look at the meter.
+
+Check the work. A green Terminal-Bench cell is not your repository.
+
+Earlier this season I wrote about Claude Code with Opus 5, before this family existed: [Honest review of Claude Code with Opus 5](/reviews/honest-review-claude-code-opus-5). The complaint then was the wait, and the quality you got for paying it. The complaint now is narrower. The quality is still the reason to be here. The week no longer ends when the plan does.
