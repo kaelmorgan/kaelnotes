@@ -1,4 +1,5 @@
 import { getAllGuides, getAllReviews } from "@/lib/content";
+import { indexNowKeyFileUrl } from "@/lib/indexnow";
 import {
   guideUrl,
   pageUrl,
@@ -44,6 +45,7 @@ export function GET() {
     "",
     `- [Sitemap](${pageUrl("/sitemap.xml")})`,
     `- [Robots](${pageUrl("/robots.txt")})`,
+    `- [IndexNow key](${indexNowKeyFileUrl()})`,
   ];
 
   return new Response(lines.join("\n"), {
